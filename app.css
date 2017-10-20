@@ -9,7 +9,7 @@ video {
     height: 100%;
     width: 100%;
     opacity: 0;
-    -webkit-transform: scaleX(-1);
+    -webkit-transform: scaleX(-1); // flips the video
 }
 
 .loading-text {
