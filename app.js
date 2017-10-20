@@ -5,8 +5,10 @@ navigator.getUserMedia = navigator.getUserMedia ||
 if (navigator.getUserMedia) {
     navigator.getUserMedia({video: true},
         function(stream) {
+            var status = document.getElementById("status");
             var video = document.getElementById('camera');
             video.srcObject = stream;
+            status.innerHTML = "Warming up camera...";
 
             video.onloadedmetadata = function(e) {
                 video.play();
@@ -15,9 +17,10 @@ if (navigator.getUserMedia) {
             };
         },
         function() {
-            alert('Could not connect to camera!');
+            status.innerHTML = "Could not connect to camera!";
         }
     );
 } else {
-   console.log("getUserMedia not supported.");
+    document.getElementById("status").innerHTML = "Sorry, can't find your webcam.";
+    console.log("getUserMedia not supported.");
 }

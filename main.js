@@ -12,7 +12,11 @@ app.on('window-all-closed', function() {
 // initialization and ready for creating browser windows.
 app.on('ready', function() {
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 858, height: 480});
+  mainWindow = new BrowserWindow({
+    width: 858,
+    height: 480,
+    backgroundColor: '#292C3F',
+  });
 
   // and load the index.html of the app.
   mainWindow.loadURL('file://' + __dirname + '/index.html');
