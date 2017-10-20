@@ -2,18 +2,57 @@ html, body, video {
     margin: 0;
     padding: 0;
     overflow: hidden;
-}
-
-video {
-    display: block;
-    height: 100%;
-    width: 100%;
-    opacity: 0;
-    -webkit-transform: scaleX(-1); // flips the video
-}
-
-.loading-text {
     font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+}
+
+#video {
+    display: block;
+    width: 1280px;
+    height: 720px;
+    opacity: 0;
+    // -webkit-transform: scaleX(-1); // flips the video
+}
+
+#photo {
+    position: absolute;
+    z-index: 998;
+    width: 1280px;
+    height: 720px;
+    opacity: 0.3;
+}
+
+#canvas {
+    display: none;
+    width: 1280px;
+    height: 720px;
+}
+
+#flash-area {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+#flash {
+    position: absolute;
+    z-index: 999;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    opacity: 0;
+}
+
+#photos-taken {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin: 40px;
+    font-size: 24px;
+    color: white;
+    opacity: 0.5;
+}
+
+#status {
     font-weight: 200;
     color: #7997CD;
     font-size: 24px;
@@ -60,4 +99,19 @@ video {
     animation-duration: 1s;
     animation-fill-mode: both;
     animation-name: fadeInOnce;
+}
+
+@keyframes flash {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.flash {
+    animation-duration: .5s;
+    animation-fill-mode: both;
+    animation-name: flash;
 }
