@@ -1,0 +1,64 @@
+html, body, video {
+    background-color: black;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+video {
+    display: block;
+    height: 100%;
+    width: 100%;
+    opacity: 0;
+    -webkit-transform: scaleX(-1);
+}
+
+.loading-text {
+    font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+    font-weight: 200;
+    color: white;
+    font-size: 24px;
+    text-align: center;
+    // position: relative;
+    // bottom: 50%;
+    // left: 50%;
+    // transform: translate(-50%, -50%);
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  40% {
+    opacity: 1;
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.fadeIn {
+    animation-duration: 4s;
+    animation-fill-mode: both;
+    animation-transition: ease-in;
+    animation-iteration-count: infinite;
+    animation-name: fadeIn;
+}
+
+@keyframes fadeInOnce {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.fadeInOnce {
+    animation-duration: 1s;
+    animation-fill-mode: both;
+    animation-name: fadeInOnce;
+}
