@@ -13,7 +13,10 @@ if (navigator.getUserMedia) {
             video.onloadedmetadata = function(e) {
                 video.play();
                 video.classList.add('fadeInOnce');
-                console.log('Video feed live!')
+                console.log('Video feed live!');
+
+                // removes status element
+                status.parentNode.removeChild(status);
             };
         },
         function() {
