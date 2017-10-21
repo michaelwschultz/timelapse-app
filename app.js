@@ -1,18 +1,24 @@
 (function() {
+    var timelapseLength = 1;
+    var secondsBetweenPhotos = 3;
+
+    var timelapseCount = null;
+
     var width = 1280;
     var height = 720;
 
-    var photosTakenCount = null;
+    var photoCount = null;
     var streaming = false;
 
     var video = null;
     var canvas = null;
     var photo = null;
-    var shutter = null;
+    var startButton = null;
     var status = null;
     var flashArea = null;
     var photosTaken = null;
     var flash = null;
+    var cameraDevice = null;
 
     function init() {
         video = document.getElementById('video');
@@ -22,6 +28,7 @@
         flashArea = document.getElementById('flash-area');
         photosTaken = document.getElementById('photos-taken');
         flash = document.getElementById('flash');
+        startButton = document.getElementById('start-button');
 
         if (navigator.mediaDevices.getUserMedia) {
             navigator.mediaDevices.getUserMedia({
@@ -34,6 +41,7 @@
                 console.log("- warming up camera");
                 status.innerHTML = "Warming up camera...";
                 video.srcObject = stream;
+                cameraDevice = stream;
 
                 video.onloadedmetadata = function(e) {
                     video.play();
@@ -53,51 +61,82 @@
             status.innerHTML = "Sorry, can't find your webcam.";
             console.log("getUserMedia not supported.");
         }
+
+        startButton.addEventListener('click', function(ev){
+            clearTimelapse(); //clears out previous screens
+
+            // TODO need to 
+
+            timelapseCount++;
+            timelapse();
+            ev.preventDefault();
+        }, false);
     }
 
     function clearPhoto() {
-        // var context = canvas.getContext('2d');
-        // context.fillStyle = "#AAA";
-        // context.fillRect(0, 0, canvas.width, canvas.height);
-
-        // removes flash element from dom
+        // removes previous photo from dom
         flash.parentNode.removeChild(flash);
 
-        var data = canvas.toDataURL('image/png');
-        photo.setAttribute('src', data);
+        //TODO this doesn't quite work right(adds a border to the photo element)
+        photo.setAttribute('src', '');
     }
 
-    function takePhoto() {
-        console.log('* took a photo');
+    function clearTimelapse() {
+        
+        // may need to double check return; area below
+        // to make sure this doesn't screw it up
 
-        var context = canvas.getContext('2d');
-        canvas.width = width;
-        canvas.height = height;
-        context.drawImage(video, 0, 0, width, height);
-    
-        // creates a flash effects
-        flash = document.createElement("div");
-        flash.setAttribute('id', "flash");
-        flash.className = 'flash';
-        flashArea.appendChild(flash);
+        photo.setAttribute('src', '');
+        photoCount = null;
+        photosTaken.innerHTML = photoCount;
+    }
 
-        // adds the new photo to the dom
-        var data = canvas.toDataURL('image/png');
-        photo.setAttribute('src', data);
+    function timelapse() {
 
-        // increment photo count and update display
-        photosTakenCount++;
-        photosTaken.innerHTML = photosTakenCount;
-        console.log('Photos taken: ' + photosTakenCount);
+        function takePhoto() {
+            // creates a flash effects
+            flash = document.createElement("div");
+            flash.setAttribute('id', "flash");
+            flash.className = 'flash';
+            flashArea.appendChild(flash);
 
-        setTimeout(function() {
-            clearPhoto();
-        }, 2000);
-      }
+            // captures image and adds new photo data to the dom
+            canvas.width = width;
+            canvas.height = height;
+            canvas.getContext('2d').drawImage(video, 0, 0, width, height);
+            photo.setAttribute('src', canvas.toDataURL('image/png'));
+            
+            // increment photo count and update display
+            console.log('* took a photo');
+            photoCount++;
+            photosTaken.innerHTML = photoCount;
+            console.log('Photos taken: ' + photoCount);
 
-    setInterval(function() {
-        takePhoto();
-    }, 3000);
+            // stop timelapse if photoCount hits photoCount
+            if (photoCount >= timelapseLength) {
+                clearInterval(timelapseLoop);
+                photosTaken.innerHTML = photoCount + ' and done';
+                console.log("timelapse finished");
+
+                // *TODO* stop video source when timelapse is done or not taking photos...
+
+                // if (timelapseCount >= 1) {
+                //     console.log('x video feed stopped');
+                //     cameraDevice.getTracks()[0].stop();
+                // }
+
+                return;
+            }
+
+            setTimeout(function() {
+                clearPhoto();
+            }, 2000);
+        }
+
+        var timelapseLoop = setInterval(function() {
+            takePhoto();
+        }, secondsBetweenPhotos * 1000);
+    }
 
     // starts app once everything is loaded
     window.addEventListener('load', init, false);

@@ -15,6 +15,7 @@ app.on('ready', function() {
   mainWindow = new BrowserWindow({
     width: 1280,
     height: 720,
+    resizable: false,
     backgroundColor: '#292C3F'
   });
 
