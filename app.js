@@ -1,6 +1,6 @@
 (function() {
-    var timelapseLength = 1;
-    var secondsBetweenPhotos = 3;
+    var timelapseLength = 2;
+    var secondsBetweenPhotos = 4;
 
     var timelapseCount = null;
 
@@ -8,7 +8,7 @@
     var height = 720;
 
     var photoCount = null;
-    var streaming = false;
+    var cameraReady = false;
 
     var video = null;
     var canvas = null;
@@ -30,6 +30,20 @@
         flash = document.getElementById('flash');
         startButton = document.getElementById('start-button');
 
+        turnOnCamera();
+
+        startButton.addEventListener('click', function(ev){
+            clearTimelapse(); //clears out previous screens
+
+            // TODO call reset funciton
+
+            timelapseCount++;
+            timelapse();
+            ev.preventDefault();
+        }, false);
+    }
+
+    function turnOnCamera() {
         if (navigator.mediaDevices.getUserMedia) {
             navigator.mediaDevices.getUserMedia({
                 video: {
@@ -45,11 +59,12 @@
 
                 video.onloadedmetadata = function(e) {
                     video.play();
+                    cameraReady = true;
                     console.log('* video feed live');
 
                     video.classList.add('fadeInOnce');
 
-                    // removes status element
+                    // removes status element from dom
                     status.parentNode.removeChild(status);
                 };
             })
@@ -61,22 +76,12 @@
             status.innerHTML = "Sorry, can't find your webcam.";
             console.log("getUserMedia not supported.");
         }
-
-        startButton.addEventListener('click', function(ev){
-            clearTimelapse(); //clears out previous screens
-
-            // TODO need to 
-
-            timelapseCount++;
-            timelapse();
-            ev.preventDefault();
-        }, false);
     }
 
     function clearPhoto() {
-        // removes previous photo from dom
         flash.parentNode.removeChild(flash);
 
+        // removes previous photo from dom
         //TODO this doesn't quite work right(adds a border to the photo element)
         photo.setAttribute('src', '');
     }
@@ -117,24 +122,31 @@
                 clearInterval(timelapseLoop);
                 photosTaken.innerHTML = photoCount + ' and done';
                 console.log("timelapse finished");
-
-                // *TODO* stop video source when timelapse is done or not taking photos...
-
-                // if (timelapseCount >= 1) {
-                //     console.log('x video feed stopped');
-                //     cameraDevice.getTracks()[0].stop();
-                // }
-
+                cameraDevice.getTracks()[0].stop();
+                
+                // freezes on final photo
                 return;
+            } else if (secondsBetweenPhotos >= 4) {
+                cameraDevice.getTracks()[0].stop();
+                cameraReady = false;
             }
 
             setTimeout(function() {
                 clearPhoto();
-            }, 2000);
+            }, 1000);
         }
 
         var timelapseLoop = setInterval(function() {
-            takePhoto();
+            if (cameraReady == false) {
+                turnOnCamera();
+            }
+            var readyToTakePhoto = setInterval(function() {
+                if (cameraReady == true) {
+                    console.log('CAM READY!!');
+                    takePhoto();
+                    clearInterval(readyToTakePhoto);
+                }
+            }, 100);
         }, secondsBetweenPhotos * 1000);
     }
 
