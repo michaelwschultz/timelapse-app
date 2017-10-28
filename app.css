@@ -13,7 +13,8 @@ html, body, video {
     padding: 0;
     margin: 0;
     opacity: 0;
-    // -webkit-transform: scaleX(-1); // flips the video
+    /* filter: blur(10px); */
+    /* -webkit-transform: scaleX(-1); flips the video */
 }
 
 #start-button {
@@ -24,10 +25,18 @@ html, body, video {
 
 #photo {
     position: absolute;
+    bottom: 40px;
+    left: 40px;
     z-index: 8;
-    width: 1280px;
-    height: 720px;
-    opacity: 1;
+    width: 320px;
+    height: 180px;
+    border: 4px solid white;
+    border-radius: 4px;
+}
+
+/* this still doesn't seem to be working */
+.hide {
+    opacity: 0;
 }
 
 #canvas {
@@ -38,13 +47,15 @@ html, body, video {
 
 #flash-area {
     position: absolute;
+    pointer-events: none;
     width: 100%;
     height: 100%;
 }
 
 #flash {
     position: absolute;
-    z-index: 10;
+    z-index: 11;
+    pointer-events: none;
     width: 100%;
     height: 100%;
     background-color: white;
@@ -54,6 +65,7 @@ html, body, video {
 #photos-taken {
     position: absolute;
     z-index: 9;
+    pointer-events: none;
     bottom: 0;
     right: 0;
     padding: 40px;
@@ -63,6 +75,9 @@ html, body, video {
 }
 
 #status {
+    position: relative;
+    pointer-events: none;
+    z-index: 10;
     font-weight: 200;
     color: #7997CD;
     font-size: 24px;
@@ -74,18 +89,18 @@ html, body, video {
 }
 
 @keyframes fadeIn {
-  0% {
-    opacity: 0;
-  }
-  40% {
-    opacity: 1;
-  }
-  60% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
+    0% {
+        opacity: 0;
+    }
+    40% {
+        opacity: 1;
+    }
+    60% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
 }
 
 .fadeIn {
@@ -97,27 +112,44 @@ html, body, video {
 }
 
 @keyframes fadeInOnce {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
 }
 
 .fadeInOnce {
-    animation-duration: 1s;
+    animation-duration: 1.5s;
     animation-fill-mode: both;
     animation-name: fadeInOnce;
 }
 
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translate3d(0, 100%, 0);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+.fadeInUp {
+    animation-duration: 0.5s;
+    animation-name: fadeInUp;
+}
+
 @keyframes flash {
-  0% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
 }
 
 .flash {

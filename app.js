@@ -1,8 +1,7 @@
 (function() {
     var timelapseLength = 2;
     var secondsBetweenPhotos = 4;
-
-    var timelapseCount = null;
+    var warmupDelaySeconds = 2;
 
     var width = 1280;
     var height = 720;
@@ -16,7 +15,7 @@
     var startButton = null;
     var status = null;
     var flashArea = null;
-    var photosTaken = null;
+    var numPhotosTaken = null;
     var flash = null;
     var cameraDevice = null;
 
@@ -26,21 +25,31 @@
         photo = document.getElementById('photo');
         status = document.getElementById('status');
         flashArea = document.getElementById('flash-area');
-        photosTaken = document.getElementById('photos-taken');
+        numPhotosTaken = document.getElementById('photos-taken');
         flash = document.getElementById('flash');
         startButton = document.getElementById('start-button');
 
         turnOnCamera();
 
         startButton.addEventListener('click', function(ev){
-            clearTimelapse(); //clears out previous screens
+            // resets state of app before starting a new timelapse
+            reset();
 
-            // TODO call reset funciton
-
-            timelapseCount++;
             timelapse();
             ev.preventDefault();
         }, false);
+    }
+
+    function reset() {
+        // removes status element from dom
+        status.innerHTML = "";
+
+        // clears out all photo atributes
+        photoCount = null;
+        numPhotosTaken.innerHTML = photoCount;
+        hidePhoto();
+        photo.setAttribute('src', '');
+        console.log("** Reset! **");
     }
 
     function turnOnCamera() {
@@ -65,7 +74,8 @@
                     video.classList.add('fadeInOnce');
 
                     // removes status element from dom
-                    status.parentNode.removeChild(status);
+                    status.innerHTML = "";
+                    // status.parentNode.removeChild(status);
                 };
             })
             .catch(function() {
@@ -78,75 +88,81 @@
         }
     }
 
-    function clearPhoto() {
-        flash.parentNode.removeChild(flash);
-
-        // removes previous photo from dom
-        //TODO this doesn't quite work right(adds a border to the photo element)
-        photo.setAttribute('src', '');
+    function turnOffCamera() {
+        cameraDevice.getTracks()[0].stop();
+        cameraReady = false;
     }
 
-    function clearTimelapse() {
-        
-        // may need to double check return; area below
-        // to make sure this doesn't screw it up
+    function showPhoto() {
+        photo.classList.remove("hide");
+        photo.classList.add("fadeInUp");
+    }
 
-        photo.setAttribute('src', '');
-        photoCount = null;
-        photosTaken.innerHTML = photoCount;
+    function hidePhoto() {
+        photo.classList.remove("fadeInUp");
+        photo.classList.add("hide");
+    }
+
+    function takePhoto() {
+
+        // creates a flash effects
+        flash = document.createElement("div");
+        flash.setAttribute('id', "flash");
+        flash.className = 'flash';
+        flashArea.appendChild(flash);
+
+        // captures image and adds new photo data to the dom
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext('2d').drawImage(video, 0, 0, width, height);
+        photo.setAttribute('src', canvas.toDataURL('image/png'));
+        showPhoto();
+        
+        // increment photo count and update display;
+        photoCount++;
+        console.log('Photos taken: ' + photoCount);
+
+        // stop timelapse if photoCount hits timelapseLength
+        if (photoCount >= timelapseLength) {
+            numPhotosTaken.innerHTML = photoCount + ' and done';
+            console.log("timelapse finished");
+            turnOffCamera();
+
+            status.innerHTML = "All done!";
+        } else {
+            numPhotosTaken.innerHTML = photoCount;
+        }
+
+        // setTimeout(function() {
+        //     hidePhoto();
+        // }, 2000);
+        
+        setTimeout(function() {
+            flash.parentNode.removeChild(flash);
+        }, 1000);
     }
 
     function timelapse() {
+        console.log("- start timelapse");
 
-        function takePhoto() {
-            // creates a flash effects
-            flash = document.createElement("div");
-            flash.setAttribute('id', "flash");
-            flash.className = 'flash';
-            flashArea.appendChild(flash);
-
-            // captures image and adds new photo data to the dom
-            canvas.width = width;
-            canvas.height = height;
-            canvas.getContext('2d').drawImage(video, 0, 0, width, height);
-            photo.setAttribute('src', canvas.toDataURL('image/png'));
-            
-            // increment photo count and update display
-            console.log('* took a photo');
-            photoCount++;
-            photosTaken.innerHTML = photoCount;
-            console.log('Photos taken: ' + photoCount);
-
-            // stop timelapse if photoCount hits photoCount
-            if (photoCount >= timelapseLength) {
-                clearInterval(timelapseLoop);
-                photosTaken.innerHTML = photoCount + ' and done';
-                console.log("timelapse finished");
-                cameraDevice.getTracks()[0].stop();
-                
-                // freezes on final photo
-                return;
-            } else if (secondsBetweenPhotos >= 4) {
-                cameraDevice.getTracks()[0].stop();
-                cameraReady = false;
-            }
-
-            setTimeout(function() {
-                clearPhoto();
-            }, 1000);
+        if (cameraReady == false) {
+            turnOnCamera();
         }
 
         var timelapseLoop = setInterval(function() {
-            if (cameraReady == false) {
+            if (photoCount >= timelapseLength) {
+                clearInterval(timelapseLoop);
+            } else if (cameraReady == false) {
                 turnOnCamera();
             }
             var readyToTakePhoto = setInterval(function() {
+                // makes sure camera is ready to take a photo
                 if (cameraReady == true) {
                     console.log('CAM READY!!');
                     takePhoto();
                     clearInterval(readyToTakePhoto);
                 }
-            }, 100);
+            }, 500);
         }, secondsBetweenPhotos * 1000);
     }
 
