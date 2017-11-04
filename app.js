@@ -1,17 +1,21 @@
 (function() {
-    var timelapseLength = 2;
-    var secondsBetweenPhotos = 4;
+    var timelapseLength = 5;
+    var secondsBetweenPhotos = 1;
     var warmupDelaySeconds = 2;
 
     var width = 1280;
     var height = 720;
 
-    var photoCount = null;
+    var currentPhoto = null;
+    var photoCount = 0;
     var cameraReady = false;
 
     var video = null;
     var canvas = null;
     var photo = null;
+    var photos = null;
+    var photoContainer = null;
+    var closeButton = null;
     var startButton = null;
     var status = null;
     var flashArea = null;
@@ -22,11 +26,10 @@
     function init() {
         video = document.getElementById('video');
         canvas = document.getElementById('canvas');
-        photo = document.getElementById('photo');
+        photos = document.getElementById('photos');
         status = document.getElementById('status');
         flashArea = document.getElementById('flash-area');
         numPhotosTaken = document.getElementById('photos-taken');
-        flash = document.getElementById('flash');
         startButton = document.getElementById('start-button');
 
         turnOnCamera();
@@ -45,10 +48,10 @@
         status.innerHTML = "";
 
         // clears out all photo atributes
-        photoCount = null;
+        photoCount = 0;
         numPhotosTaken.innerHTML = photoCount;
-        hidePhoto();
-        photo.setAttribute('src', '');
+        // hidePhoto();
+        // photo.setAttribute('src', '');
         console.log("** Reset! **");
     }
 
@@ -95,13 +98,19 @@
 
     function showPhoto() {
         photo.classList.remove("hide");
-        photo.classList.add("fadeInUp");
+        photo.classList.add("fadeInRight");
     }
 
     function hidePhoto() {
-        photo.classList.remove("fadeInUp");
+        photo.classList.remove("fadeInRight");
         photo.classList.add("hide");
     }
+
+    // todo
+    // function removePhoto() {
+    //     get id of photo
+    //     remove photo from array
+    // }
 
     function takePhoto() {
 
@@ -111,16 +120,41 @@
         flash.className = 'flash';
         flashArea.appendChild(flash);
 
+        // todo: create an array of divs that and know
+        //       which one to add a photo to before moving on to the next
+
+        // creates a new photo component
+        newPhoto = "photo" + photoCount;
+
+        photoContainer = document.createElement("div");
+        photoContainer.className = "photo-container fadeInRight";
+        
+
+        // Add x button here
+        closeButton = document.createElement("div");
+        closeButton.className = "close-button";
+        photoContainer.appendChild(closeButton);
+        closeButton.innerHTML = "x";
+
+        photo = document.createElement("img");
+        photo.setAttribute("id", newPhoto);
+        photo.className = "photo";
+        photoContainer.appendChild(photo);
+
+        photos.appendChild(photoContainer);
+        
+        currentPhoto = document.getElementById(newPhoto);
+
         // captures image and adds new photo data to the dom
         canvas.width = width;
         canvas.height = height;
-        canvas.getContext('2d').drawImage(video, 0, 0, width, height);
-        photo.setAttribute('src', canvas.toDataURL('image/png'));
+        canvas.getContext("2d").drawImage(video, 0, 0, width, height);
+        photo.setAttribute("src", canvas.toDataURL("image/png"));
         showPhoto();
         
         // increment photo count and update display;
         photoCount++;
-        console.log('Photos taken: ' + photoCount);
+        console.log("Photos taken: " + photoCount);
 
         // stop timelapse if photoCount hits timelapseLength
         if (photoCount >= timelapseLength) {
@@ -138,6 +172,9 @@
         // }, 2000);
         
         setTimeout(function() {
+
+            // todo: final flash is being removed twice
+
             flash.parentNode.removeChild(flash);
         }, 1000);
     }
