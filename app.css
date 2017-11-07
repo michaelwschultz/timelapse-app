@@ -15,9 +15,9 @@ html, body, video {
     background: rgba(255,255,255,0.35);
 }
 
-::-webkit-scrollbar-thumb:window-inactive {
-    background: rgba(255,0,0,0); 
-}
+// ::-webkit-scrollbar-thumb:window-inactive {
+//     background: rgba(255,0,0,0); 
+// }
 
 #video {
     z-index: 7;
@@ -117,7 +117,7 @@ html, body, video {
     opacity: 0;
 }
 
-#photos-taken {
+#photo-count {
     position: absolute;
     z-index: 9;
     pointer-events: none;
