@@ -1,0 +1,10 @@
+{
+  "name": "timelapse",
+  "version": "0.1",
+  "main": "main.js",
+  "dependencies": {
+    "ffbinaries": "^1.0.3",
+    "fluent-ffmpeg": "^2.1.2",
+    "videoshow": "^0.1.11"
+  }
+}

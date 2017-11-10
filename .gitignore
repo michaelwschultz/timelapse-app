@@ -1,2 +1,3 @@
-/photos
-userSettings.json
+/app/binaries
+/app/data
+/app/node_modules
