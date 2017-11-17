@@ -16,7 +16,8 @@ app.on('ready', function() {
     width: 640,
     height: 360,
     resizable: false,
-    backgroundColor: '#292C3F'
+    backgroundColor: '#292C3F',
+    icon: __dirname + '/temp_icon.icns'
   });
 
   // and load the index.html of the app.
