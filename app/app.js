@@ -10,7 +10,7 @@
     var userSettings = null;
 
     var timelapseLength = 4;
-    var secondsBetweenPhotos = 1;
+    var secondsBetweenPhotos = 3;
     var warmupDelaySeconds = 2;
 
     var dataDirectoryName = null;
@@ -38,11 +38,15 @@
     var numPhotosTaken = null;
     var flash = null;
 
+    var timelapseRunning = false;
+    var timelapseLoop = null;
+    var timelapseFinished = null;
+
     var binaryDest = __dirname + '/binaries';
     var videoFiles = [];
     var videoOptions = {
         fps: 30,
-        loop: 0.5, // seconds
+        loop: 0.3, // seconds
         transition: false,
         transitionDuration: 0, // seconds
         videoBitrate: 5000,
@@ -131,12 +135,24 @@
         numPhotosTaken = document.getElementById('photo-count');
         startButton = document.getElementById('start-button');
         createVideoButton = document.getElementById('create-video-button');
+        controls = document.getElementById('controls');
 
         turnOnCamera();
 
         startButton.addEventListener('click', function(ev){
             // resets state of app before starting a new timelapse
-            reset(timelapse);
+            console.log(timelapseRunning)
+            if (timelapseRunning == false) {
+                console.log(timelapseRunning, 'called');
+                timelapseRunning = true;
+                console.log(timelapseRunning)
+                reset(timelapse);
+            } else {
+                clearInterval(timelapseLoop);
+                timelapseFinished();
+
+                return;
+            }
             ev.preventDefault();
         }, false);
 
@@ -150,7 +166,8 @@
         // removes status element from dom
         status.innerHTML = "";
 
-        document.getElementById("start-button").disabled = true;
+        startButton.innerHTML = "Stop";
+        createVideoButton.disabled = true;
 
         // clears out all photo atributes
         photoCount = 0;
@@ -160,8 +177,9 @@
         if (photos.children.length > 0) {
             photos.innerHTML = "";
         }
-
         console.log("** Reset! **");
+
+        // starts timelapse
         callback();
     }
 
@@ -185,13 +203,16 @@
                     console.log('* video feed live');
 
                     video.classList.add('fadeInOnce');
+                    controls.classList.add('fadeInUp');
 
                     // removes status element from dom
                     status.innerHTML = "";
                     // status.parentNode.removeChild(status);
 
                     localStream.getTracks()[0].onended = function(event) {
-                        document.getElementById("start-button").disabled = false;
+                        // TODO: move this line to the finished function
+                        startButton.innerHTML = "Start";
+                        createVideoButton.disabled = false;
                     }
                 };
             })
@@ -263,16 +284,7 @@
                 }
 
             ev.preventDefault();
-          }, false);
-
-        // removeButton.addEventListener("click", function(ev){
-
-        //     // TODO: fix bug that just removes the last photo in the array.
-        //     //       Each button should know which photo it's tied to.
-        //     photoContainer.parentNode.removeChild(photoContainer);
-
-        //     ev.preventDefault();
-        // }, false);
+        }, false);
 
         photo = document.createElement("img");
         photo.className = "photo";
@@ -296,34 +308,7 @@
         // increment photo count and update display;
         photoCount++;
         console.log("Photos taken: " + photoCount);
-
-        // stop timelapse if photoCount hits timelapseLength
-        if (photoCount >= timelapseLength) {
-            console.log('photo count - ' + photoCount + ' timelapse count - ' + timelapseLength);
-            numPhotosTaken.innerHTML = photoCount + ' and done';
-            console.log("timelapse finished");
-
-            status.innerHTML = "All done!";
-
-            turnOffCamera();
-
-            // read userSettings to store stats
-            fs.readFile(settingsFileLocation, 'utf8', function (err, data) {
-                if (err) throw err;
-                userSettings = JSON.parse(data);
-            });
-
-            // increases timelapseComplete by 1 and adds photos to total count.
-            ++userSettings.user.timelapseComplete;
-            userSettings.user.photosTaken = userSettings.user.photosTaken + photoCount;
-            try { fs.writeFileSync(settingsFileLocation, JSON.stringify(userSettings, null, 4)); }
-            catch(e) { alert('Failed to save userSettings!'); }
-            finally {
-                userSettings = require(settingsFileLocation);
-            }
-        } else {
-            numPhotosTaken.innerHTML = photoCount;
-        }
+        numPhotosTaken.innerHTML = photoCount;
     }
 
     function timelapse() {
@@ -342,24 +327,46 @@
             }
         }();
 
-        var timelapseLoop = setInterval(function() {
+        timelapseFinished = function() {
+            fs.readdir(timelapseDirectoryName, (err, files) => {
+                files.forEach(file => {
+                    if (!/^\..*/.test(file)) {
+                        videoFiles.push(timelapseDirectoryName + '/' + file)
+                    }
+                });
+            });
+
+            // run after timelapse
+            console.log('photo count - ' + photoCount + ' timelapse count - ' + timelapseLength);
+            numPhotosTaken.innerHTML = photoCount + ' and done';
+            console.log("timelapse finished");
+
+            status.innerHTML = "All done!";
+
+            turnOffCamera();
+            timelapseRunning = false;
+
+            // increases timelapseComplete by 1 and adds photos to total count.
+            ++userSettings.user.timelapseComplete;
+            userSettings.user.photosTaken = userSettings.user.photosTaken + photoCount;
+            try { fs.writeFileSync(settingsFileLocation, JSON.stringify(userSettings, null, 4)); }
+            catch(e) { alert('Failed to save userSettings!'); }
+            finally {
+                userSettings = require(settingsFileLocation);
+            }
+        };
+
+        timelapseLoop = setInterval(function() {
             if (photoCount >= timelapseLength) {
                 clearInterval(timelapseLoop);
+                timelapseFinished();
 
-                fs.readdir(timelapseDirectoryName, (err, files) => {
-                    files.forEach(file => {
-                        if (!/^\..*/.test(file)) {
-                            videoFiles.push(timelapseDirectoryName + '/' + file)
-                        }
-                    });
-                })
-
-                // TODO: not sure if I need this return
                 return;
             } else if (cameraReady == false) {
                 turnOnCamera();
             }
             var readyToTakePhoto = setInterval(function() {
+                console.log("done!");
                 // makes sure camera is ready to take a photo
                 if (cameraReady == true) {
                     console.log('CAM READY!!');

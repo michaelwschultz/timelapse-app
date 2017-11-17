@@ -13,8 +13,8 @@ app.on('window-all-closed', function() {
 app.on('ready', function() {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 1280,
-    height: 720,
+    width: 640,
+    height: 360,
     resizable: false,
     backgroundColor: '#292C3F'
   });
