@@ -2,18 +2,21 @@
 <html>
     <head>
         <title>Timelapse</title>
+        <link rel="stylesheet" href="basscss.css">
         <link rel="stylesheet" href="app.css">
         <script src="app.js"></script>
     </head>
     <body>
         <div id="controls" class="hide">
-            <button id="menu-button">
-                <div class="bar"></div>
-                <div class="bar"></div>
-                <div class="bar"></div>
-            </button>
-            <button id="start-button">Start</button>
-            <button id="create-video-button">Export Timelapse Video</button>
+            <div class="flex justify-between">
+                <button id="menu-button">
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                </button>
+                <button id="create-video-button">Export Timelapse Video</button>
+                <button id="start-button">Start</button>
+            </div>
 
             <div id="settings">
                 <h1>Lapsey</h1>
