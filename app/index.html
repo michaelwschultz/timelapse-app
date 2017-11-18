@@ -6,15 +6,32 @@
         <script src="app.js"></script>
     </head>
     <body>
-        <div id="controls" class="fadeInUp">
-            <button id="menu">
+        <div id="controls" class="hide">
+            <button id="menu-button">
                 <div class="bar"></div>
                 <div class="bar"></div>
                 <div class="bar"></div>
             </button>
             <button id="start-button">Start</button>
             <button id="create-video-button">Export Timelapse Video</button>
+
+            <div id="settings">
+                <h1>Lapsey</h1>
+                <ul>
+                    <li class="checkbox">
+                        <input type="checkbox" id="start-app-on-launch" value="none" name="check"></input>
+                        <label for="start-app-on-launch"></label>
+                        <span>Launch Lapsey on system startup</span>
+                    </li>
+                    <li class="checkbox">
+                        <input type="checkbox" id="save-before-quitting"></input>
+                        <label for="save-before-quitting"></label>
+                        <span>Save before quitting</span>
+                    </li>
+                </ul>
+            </div>
         </div>
+        
         <div id="flash-area">
             <!-- flash elements -->
         </div>

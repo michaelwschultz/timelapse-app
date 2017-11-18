@@ -136,6 +136,7 @@
         startButton = document.getElementById('start-button');
         createVideoButton = document.getElementById('create-video-button');
         controls = document.getElementById('controls');
+        menuButton = document.getElementById('menu-button');
 
         turnOnCamera();
 
@@ -158,6 +159,16 @@
 
         createVideoButton.addEventListener('click', function(ev){
             makeVideo();
+            ev.preventDefault();
+        }, false);
+
+        menuButton.addEventListener('click', function(ev){
+            if (controls.classList.contains('animate-controls')) {
+                controls.classList.remove('animate-controls');
+            } else {
+                controls.classList.add('animate-controls');
+            }
+            
             ev.preventDefault();
         }, false);
     }
@@ -203,7 +214,7 @@
                     console.log('* video feed live');
 
                     video.classList.add('fadeInOnce');
-                    controls.classList.add('fadeInUp');
+                    controls.className = 'fadeInUp';
 
                     // removes status element from dom
                     status.innerHTML = "";
