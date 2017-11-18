@@ -9,8 +9,8 @@
     var settingsFileLocation = null;
     var userSettings = null;
 
-    var timelapseLength = 4;
-    var secondsBetweenPhotos = 3;
+    var timelapseLength = 3;
+    var secondsBetweenPhotos = 20;
     var warmupDelaySeconds = 2;
 
     var dataDirectoryName = null;
