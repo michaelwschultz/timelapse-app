@@ -6,11 +6,13 @@
     var ffmpeg = require('fluent-ffmpeg');
     var videoshow = require('videoshow');
 
+    var versionNumber = "0.0.1";
+
     var settingsFileLocation = null;
     var userSettings = null;
 
     var timelapseLength = 3;
-    var secondsBetweenPhotos = 20;
+    var secondsBetweenPhotos = 3;
     var warmupDelaySeconds = 2;
 
     var dataDirectoryName = null;
@@ -40,6 +42,7 @@
 
     var timelapseRunning = false;
     var timelapseLoop = null;
+    var loopInterval = null;
     var timelapseFinished = null;
 
     var binaryDest = __dirname + '/binaries';
@@ -137,8 +140,10 @@
         createVideoButton = document.getElementById('create-video-button');
         controls = document.getElementById('controls');
         menuButton = document.getElementById('menu-button');
+        spinner = document.getElementById('spinner');
 
         turnOnCamera();
+        renderControls();
 
         startButton.addEventListener('click', function(ev){
             // resets state of app before starting a new timelapse
@@ -149,7 +154,7 @@
                 console.log(timelapseRunning)
                 reset(timelapse);
             } else {
-                clearInterval(timelapseLoop);
+                clearInterval(loopInterval);
                 timelapseFinished();
 
                 return;
@@ -181,8 +186,10 @@
         createVideoButton.disabled = true;
 
         // clears out all photo atributes
+        if (photoCount > 0) {
+            numPhotosTaken.innerHTML = "";
+        }
         photoCount = 0;
-        numPhotosTaken.innerHTML = photoCount;
 
         // clears out photos in dom
         if (photos.children.length > 0) {
@@ -192,6 +199,11 @@
 
         // starts timelapse
         callback();
+    }
+
+    function renderControls() {
+        console.log('*&*&*&*&*&');
+        controls.className = 'fadeInUp';
     }
 
     function turnOnCamera() {
@@ -214,7 +226,6 @@
                     console.log('* video feed live');
 
                     video.classList.add('fadeInOnce');
-                    controls.className = 'fadeInUp';
 
                     // removes status element from dom
                     status.innerHTML = "";
@@ -325,6 +336,8 @@
     function timelapse() {
         console.log("- start timelapse");
 
+        spinner.classList.add("spin");
+
         if (cameraReady == false) {
             turnOnCamera();
         }
@@ -349,7 +362,8 @@
 
             // run after timelapse
             console.log('photo count - ' + photoCount + ' timelapse count - ' + timelapseLength);
-            numPhotosTaken.innerHTML = photoCount + ' and done';
+            spinner.classList.remove("spin");
+            numPhotosTaken.innerHTML = photoCount;
             console.log("timelapse finished");
 
             status.innerHTML = "All done!";
@@ -367,25 +381,33 @@
             }
         };
 
-        timelapseLoop = setInterval(function() {
-            if (photoCount >= timelapseLength) {
-                clearInterval(timelapseLoop);
-                timelapseFinished();
+        timelapseLoop = function() {
 
-                return;
-            } else if (cameraReady == false) {
-                turnOnCamera();
-            }
-            var readyToTakePhoto = setInterval(function() {
-                console.log("done!");
-                // makes sure camera is ready to take a photo
-                if (cameraReady == true) {
-                    console.log('CAM READY!!');
-                    clearInterval(readyToTakePhoto);
-                    takePhoto();
+            loop = function() {
+                console.log("!!! loop called !!!");
+                if (photoCount >= timelapseLength) {
+                    clearInterval(loopInterval);
+                    timelapseFinished();
+
+                    return;
+                } else if (cameraReady == false) {
+                    turnOnCamera();
                 }
-            }, 500);
-        }, secondsBetweenPhotos * 1000);
+                var readyToTakePhoto = setInterval(function() {
+                    console.log("done!");
+                    // makes sure camera is ready to take a photo
+                    if (cameraReady == true) {
+                        console.log('CAM READY!!');
+                        clearInterval(readyToTakePhoto);
+                        takePhoto();
+                    }
+                }, 500);
+            };
+
+            console.log("timelapseLoop called")
+            loop();
+            var loopInterval = setInterval(loop, secondsBetweenPhotos * 1000);
+        }();
     }
 
     function makeVideo() {

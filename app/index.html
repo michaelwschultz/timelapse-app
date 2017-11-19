@@ -8,18 +8,26 @@
     </head>
     <body>
         <div id="controls" class="hide">
-            <div class="flex justify-between">
+            <div class="flex justify-between px1">
                 <button id="menu-button">
                     <div class="bar"></div>
                     <div class="bar"></div>
                     <div class="bar"></div>
                 </button>
-                <button id="create-video-button">Export Timelapse Video</button>
-                <button id="start-button">Start</button>
+                <div class="flex items-center">
+                    <div id="spinner"></div>
+                    <div id="photo-count">
+                        <!-- number of photos taken -->
+                    </div>
+                </div>
+                <div>
+                    <button id="create-video-button">Export Timelapse Video</button>
+                    <button id="start-button">Start</button>
+                </div>
             </div>
 
-            <div id="settings">
-                <h1>Lapsey</h1>
+            <div id="settings" class="px2">
+                <h1 class="h5 mb2" style="color: white;">Lapsey</h1>
                 <ul>
                     <li class="checkbox">
                         <input type="checkbox" id="start-app-on-launch" value="none" name="check"></input>
@@ -37,9 +45,6 @@
         
         <div id="flash-area">
             <!-- flash elements -->
-        </div>
-        <div id="photo-count">
-            <!-- number of photos taken -->
         </div>
         <div id="status" class="fadeIn">
             <!-- current status message -->
