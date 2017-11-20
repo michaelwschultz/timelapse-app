@@ -1,10 +1,17 @@
 {
-  "name": "timelapse",
-  "version": "0.1",
+  "name": "Timelapse",
+  "version": "0.0.1",
+  "description": "App for taking timelapse videos via your desktop camera.",
   "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
   "dependencies": {
     "ffbinaries": "^1.0.3",
     "fluent-ffmpeg": "^2.1.2",
     "videoshow": "^0.1.11"
+  },
+  "devDependencies": {
+    "electron": "^1.7.9"
   }
 }
