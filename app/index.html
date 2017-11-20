@@ -7,42 +7,44 @@
         <script src="app.js"></script>
     </head>
     <body>
-        <div id="controls" class="hide">
-            <div class="flex justify-between px1">
+        <div id="controls" class="hide" style="width: 100%;">
+            <div class="flex justify-between px2">
+                <div class="absolute" style="width: 28px; height: 28px; left: 50%; margin-left: -14px">
+                    <div id="spinner" class="absolute"></div>
+                    <div id="photo-count">
+                        <!-- number of photos taken -->
+                    </div>
+                </div>
                 <button id="menu-button">
                     <div class="bar"></div>
                     <div class="bar"></div>
                     <div class="bar"></div>
                 </button>
-                <div class="flex items-center">
-                    <div id="spinner"></div>
-                    <div id="photo-count">
-                        <!-- number of photos taken -->
-                    </div>
-                </div>
                 <div>
-                    <button id="create-video-button">Export Timelapse Video</button>
+                    <button id="create-video-button" class="hide">Export Timelapse Video</button>
                     <button id="start-button">Start</button>
                 </div>
             </div>
 
             <div id="settings" class="px2">
-                <h1 class="h5 mb2" style="color: white;">Lapsey</h1>
+                <div class="flex justify-between mb2">
+                    <h1 id="app-name" class="h5" style="color: white;">Lapsey</h1>
+                    <h6 id="app-version" class="h6" style="color: white;"></h6>
+                </div>
                 <ul>
                     <li class="checkbox">
-                        <input type="checkbox" id="start-app-on-launch" value="none" name="check"></input>
+                        <input type="checkbox" id="start-app-on-launch" name="startAppOnLaunch"></input>
                         <label for="start-app-on-launch"></label>
                         <span>Launch Lapsey on system startup</span>
                     </li>
                     <li class="checkbox">
-                        <input type="checkbox" id="save-before-quitting"></input>
+                        <input type="checkbox" id="save-before-quitting" name="saveBeforeQuitting"></input>
                         <label for="save-before-quitting"></label>
                         <span>Save before quitting</span>
                     </li>
                 </ul>
             </div>
         </div>
-        
         <div id="flash-area">
             <!-- flash elements -->
         </div>
