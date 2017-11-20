@@ -1,22 +1,23 @@
 (function() {
-    var fs = require('fs');
-    var path = require('path');
-    var os = require('os');
+    const {app} = require('electron').remote;
+    const fs = require('fs');
+    const path = require('path');
+    const shell = require('electron').shell
+    const os = require('os');
+
     var ffbinaries = require('ffbinaries');
     var ffmpeg = require('fluent-ffmpeg');
     var videoshow = require('videoshow');
 
     var versionNumber = "0.0.1";
+    var userDataPath = app.getPath('userData');
 
-    var settingsFileLocation = null;
+    var settingsFileLocation =  userDataPath + '/userSettings.json';
     var userSettings = null;
 
-    var timelapseLength = 3;
-    var secondsBetweenPhotos = 3;
+    var timelapseLength = 5;
+    var secondsBetweenPhotos = 1;
     var warmupDelaySeconds = 2;
-
-    var dataDirectoryName = null;
-    var timelapseDirectoryName = null;
 
     var width = 1280;
     var height = 720;
@@ -32,6 +33,7 @@
     var imageBugger = null;
     var photo = null;
     var photos = null;
+    var photoArray = null;
     var photoContainer = null;
     var removeButton = null;
     var startButton = null;
@@ -39,13 +41,22 @@
     var flashArea = null;
     var numPhotosTaken = null;
     var flash = null;
+    var controls = null;
+    var settings = null;
+    var menuButton = null;
+    var spinner = null;
+    var startAppOnLaunch = null;
+    var checkbox = null;
 
     var timelapseRunning = false;
     var timelapseLoop = null;
     var loopInterval = null;
-    var timelapseFinished = null;
 
-    var binaryDest = __dirname + '/binaries';
+    var appName = app.getName();
+    var photosPath = path.join(app.getPath('pictures'), appName);
+    var timelapseDirectoryName = null;
+
+    var binaryDest = userDataPath + '/Binaries';
     var videoFiles = [];
     var videoOptions = {
         fps: 30,
@@ -59,6 +70,15 @@
         // audioChannels: 2,
         format: 'mp4',
         pixelFormat: 'yuv420p'
+    }
+
+    var updateUserSettings = function() {
+        try { fs.writeFileSync(settingsFileLocation, JSON.stringify(userSettings, null, 4)); }
+        catch(e) { console.log('Failed to save the user settings file!'); }
+        finally {
+            userSettings = require(settingsFileLocation);
+            console.log('User settings updated.');
+        }
     }
 
     function init() {
@@ -75,18 +95,14 @@
 
         ffmpeg.setFfmpegPath(binaryDest + '/ffmpeg');
 
-        var createDataDirectory = function() {
-            dataDirectoryName =  __dirname + '/data';
-
-            if (!fs.existsSync(dataDirectoryName)) {
-                fs.mkdirSync(dataDirectoryName);
-                console.log('new folder created')
+        var createPhotosDirectory = function() {
+            if (!fs.existsSync(photosPath)) {
+                fs.mkdirSync(photosPath);
+                console.log('new photo folder created')
             }
         }();
 
         var getUserSettings = function() {
-            settingsFileLocation =  dataDirectoryName + '/userSettings.json';
-            
             // TODO generate real unique ID
             var userId = 'user-' + new Date().toISOString().slice(0, 10) + '-' + new Date().getHours() + new Date().getMinutes() + new Date().getSeconds();
 
@@ -94,6 +110,7 @@
                 "user": {
                     "userId": userId, 
                     "created": new Date(),
+                    "startAppOnLaunch": false,
                     "appOpens": null,
                     "photosTaken": null,
                     "timelapseComplete": null
@@ -116,20 +133,14 @@
                 }
             } else {
                 userSettings = require(settingsFileLocation);
-                console.log('Using current userSettings file.');
             }
 
             // increases appOpens by 1
             ++userSettings.user.appOpens;
-            try { fs.writeFileSync(settingsFileLocation, JSON.stringify(userSettings, null, 4)); }
-            catch(e) { alert('Failed to save userSettings!'); }
-            finally {
-                userSettings = require(settingsFileLocation);
-            }
-
-            console.table(userSettings);
+            updateUserSettings();
         }();
 
+        // global variables
         video = document.getElementById('video');
         canvas = document.getElementById('canvas');
         photos = document.getElementById('photos');
@@ -141,17 +152,17 @@
         controls = document.getElementById('controls');
         menuButton = document.getElementById('menu-button');
         spinner = document.getElementById('spinner');
+        settings = document.getElementById('settings');
+        checkbox = document.querySelectorAll('input[type=checkbox]');
+        startAppOnLaunch = document.getElementById('start-app-on-launch');
 
-        turnOnCamera();
         renderControls();
 
+        // add event listeners to controls
         startButton.addEventListener('click', function(ev){
             // resets state of app before starting a new timelapse
-            console.log(timelapseRunning)
             if (timelapseRunning == false) {
-                console.log(timelapseRunning, 'called');
                 timelapseRunning = true;
-                console.log(timelapseRunning)
                 reset(timelapse);
             } else {
                 clearInterval(loopInterval);
@@ -176,9 +187,26 @@
             
             ev.preventDefault();
         }, false);
+
+        checkbox.forEach(function(elem) {
+
+            // set checked states of user settings
+            elem.checked = userSettings.user[elem.name];
+
+            elem.addEventListener('change', function() {
+                if (this.checked == true) {
+                    this.checked = true;
+                    userSettings.user[this.name] = true;
+                } else {
+                    this.checked = false;
+                    userSettings.user[this.name] = false;
+                }
+                updateUserSettings();
+            })
+        });
     }
 
-    function reset(callback) { 
+    var reset = function(callback)  { 
         // removes status element from dom
         status.innerHTML = "";
 
@@ -195,18 +223,21 @@
         if (photos.children.length > 0) {
             photos.innerHTML = "";
         }
-        console.log("** Reset! **");
 
         // starts timelapse
         callback();
     }
 
-    function renderControls() {
-        console.log('*&*&*&*&*&');
+    var renderControls = function() {
         controls.className = 'fadeInUp';
+        
+        // TODO: fix this timeout hack to block video from starting before controls are visible
+        setTimeout(function(){
+            turnOnCamera();
+        }, 500);
     }
 
-    function turnOnCamera() {
+    var turnOnCamera = function() {
         if (navigator.mediaDevices.getUserMedia) {
             navigator.mediaDevices.getUserMedia({
                 video: {
@@ -221,11 +252,10 @@
                 window.localStream = stream;
 
                 video.onloadedmetadata = function(e) {
-                    // video.play();
                     cameraReady = true;
                     console.log('* video feed live');
 
-                    video.classList.add('fadeInOnce');
+                    video.className = 'fadeInOnce';
 
                     // removes status element from dom
                     status.innerHTML = "";
@@ -248,7 +278,7 @@
         }
     }
 
-    function turnOffCamera() {
+    var turnOffCamera = function() {
         // cameraDevice.getTracks().forEach(function(track) {
         //     track.stop();
         // });
@@ -260,17 +290,17 @@
         }, 1000);
     }
 
-    function showPhoto() {
+    var showPhoto = function() {
         photo.classList.remove("hide");
         photo.classList.add("fadeInRight");
     }
 
-    function hidePhoto() {
+    var hidePhoto = function() {
         photo.classList.remove("fadeInRight");
         photo.classList.add("hide");
     }
 
-    function takePhoto() {
+    var takePhoto = function() {
         if (flash !== null) {
             flash.parentNode.removeChild(flash);
         }
@@ -286,33 +316,32 @@
         photoContainer.setAttribute("id", "photo-" + photoCount);
         photoContainer.className = "photo-container fadeInRight";
 
-        // inserts a close button
-        removeButton = document.createElement("div");
-        removeButton.className = "close-button";
-        photoContainer.appendChild(removeButton);
-        removeButton.innerHTML = "x";
-
-        removeButton.addEventListener("click", function(ev){
-            var remove = ev.target.classList.contains('close-button')
-            var selector = remove ? '.close-button' : '.photo'
-
-            var photoArray = Array.from(document.querySelectorAll(selector))
-            var index = photoArray.findIndex(el => el == ev.target)
-
-                if (remove) {
-                    try { fs.unlinkSync(timelapseDirectoryName + '/timelapse-photo-' + index + '.png'); }
-                    catch(e) { alert('Failed to remove photo!'); }
-                    finally { document.getElementById("photo-" + index).parentNode.removeChild(document.getElementById("photo-" + index)); }
-                }
-
-            ev.preventDefault();
-        }, false);
-
         photo = document.createElement("img");
         photo.className = "photo";
         photoContainer.appendChild(photo);
 
         photos.appendChild(photoContainer);
+
+        // inserts a close button
+        removeButton = document.createElement("div");
+        removeButton.className = "close-button";
+        photoContainer.appendChild(removeButton);
+
+        // gathers all the photos taken into an array
+        var photoArray = Array.from(document.querySelectorAll('.close-button'));
+
+        removeButton.addEventListener("click", function(ev){
+            var removePhoto = ev.target.classList.contains('close-button');
+            var index = photoArray.findIndex(el => el == ev.target);
+
+            if (removePhoto) {
+                try { fs.unlinkSync(timelapseDirectoryName + '/timelapse-photo-' + index + '.png'); }
+                catch(e) { alert('Failed to remove photo!'); }
+                finally { document.getElementById("photo-" + index).parentNode.removeChild(document.getElementById("photo-" + index)); }
+            }
+
+            ev.preventDefault();
+        }, false);
 
         // captures image and adds new photo data to the dom
         canvas.width = width;
@@ -329,13 +358,13 @@
         
         // increment photo count and update display;
         photoCount++;
-        console.log("Photos taken: " + photoCount);
         numPhotosTaken.innerHTML = photoCount;
+
+        // continues to scroll to the left as more photos come in
+        photos.scrollLeft = photos.scrollWidth - photos.clientWidth;
     }
 
-    function timelapse() {
-        console.log("- start timelapse");
-
+    var timelapse = function() {
         spinner.classList.add("spin");
 
         if (cameraReady == false) {
@@ -343,15 +372,14 @@
         }
 
         var createTimelapseDirectory = function() {
-            timelapseDirectoryName = dataDirectoryName + '/timelapse-' + new Date().toISOString().slice(0, 10) + '-' + new Date().getHours() + new Date().getMinutes() + new Date().getSeconds();
-
+            timelapseDirectoryName = photosPath + '/timelapse-' + new Date().toISOString().slice(0, 10) + '-' + new Date().getHours() + new Date().getMinutes() + new Date().getSeconds();
             if (!fs.existsSync(timelapseDirectoryName)) {
                 fs.mkdirSync(timelapseDirectoryName);
                 console.log('new timelapse folder created')
             }
         }();
 
-        timelapseFinished = function() {
+        var timelapseFinished = function() {
             fs.readdir(timelapseDirectoryName, (err, files) => {
                 files.forEach(file => {
                     if (!/^\..*/.test(file)) {
@@ -361,12 +389,12 @@
             });
 
             // run after timelapse
-            console.log('photo count - ' + photoCount + ' timelapse count - ' + timelapseLength);
+            video.className = "hide";
             spinner.classList.remove("spin");
             numPhotosTaken.innerHTML = photoCount;
-            console.log("timelapse finished");
+            console.log('photo count - ' + photoCount + ' timelapse count - ' + timelapseLength);
 
-            status.innerHTML = "All done!";
+            // status.innerHTML = "All done!";
 
             turnOffCamera();
             timelapseRunning = false;
@@ -374,17 +402,12 @@
             // increases timelapseComplete by 1 and adds photos to total count.
             ++userSettings.user.timelapseComplete;
             userSettings.user.photosTaken = userSettings.user.photosTaken + photoCount;
-            try { fs.writeFileSync(settingsFileLocation, JSON.stringify(userSettings, null, 4)); }
-            catch(e) { alert('Failed to save userSettings!'); }
-            finally {
-                userSettings = require(settingsFileLocation);
-            }
+            updateUserSettings();
         };
 
-        timelapseLoop = function() {
+        var timelapseLoop = function() {
 
-            loop = function() {
-                console.log("!!! loop called !!!");
+            var loop = function() {
                 if (photoCount >= timelapseLength) {
                     clearInterval(loopInterval);
                     timelapseFinished();
@@ -394,23 +417,20 @@
                     turnOnCamera();
                 }
                 var readyToTakePhoto = setInterval(function() {
-                    console.log("done!");
                     // makes sure camera is ready to take a photo
                     if (cameraReady == true) {
-                        console.log('CAM READY!!');
                         clearInterval(readyToTakePhoto);
                         takePhoto();
                     }
                 }, 500);
             };
 
-            console.log("timelapseLoop called")
             loop();
             var loopInterval = setInterval(loop, secondsBetweenPhotos * 1000);
         }();
     }
 
-    function makeVideo() {
+    var makeVideo = function() {
         document.getElementById("create-video-button").disabled = true;
 
         videoshow(videoFiles, videoOptions)
@@ -426,7 +446,7 @@
             console.error('ffmpeg stderr:', stderr)
             })
             .on('end', function () {
-            console.error('Video created!')
+            console.log('Video created!');
             document.getElementById("create-video-button").disabled = false;
             })
     }
