@@ -20,6 +20,7 @@ app.setLoginItemSettings({
 app.on('ready', function() {
     // Create the browser window.
     mainWindow = new BrowserWindow({
+        // titleBarStyle: 'hidden',
         width: 640,
         height: 360,
         resizable: false,
