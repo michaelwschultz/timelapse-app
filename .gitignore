@@ -1,4 +1,2 @@
-/app/binaries
-/app/data
-/app/node_modules
+/node_modules
 *.sketch
