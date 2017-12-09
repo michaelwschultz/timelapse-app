@@ -4,7 +4,8 @@
   "description": "App for taking timelapse videos via your desktop camera.",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "build": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=temp_icon.icns --prune=true --out=release-builds"
   },
   "dependencies": {
     "ffbinaries": "^1.0.3",
@@ -12,6 +13,7 @@
     "videoshow": "^0.1.11"
   },
   "devDependencies": {
-    "electron": "^1.7.9"
+    "electron": "^1.7.9",
+    "electron-packager": "^10.1.0"
   }
 }
