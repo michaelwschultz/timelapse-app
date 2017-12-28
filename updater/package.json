@@ -1,0 +1,19 @@
+{
+  "name": "updater",
+  "version": "1.0.0",
+  "description": "Let's the timelapse app know when it needs to be updated.",
+  "main": "index.js",
+  "scripts": {
+    "start": "PORT=80 node index.js",
+    "dev": "PORT=3000 ./node_modules/.bin/nodemon index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.2",
+    "morgan": "^1.9.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.12.5"
+  }
+}
