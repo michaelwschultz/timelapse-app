@@ -1,207 +1,215 @@
 (function() {
-    const {app} = require('electron').remote;
-    const fs = require('fs');
-    const path = require('path');
-    const shell = require('electron').shell;
-    const ipcRenderer = require('electron').ipcRenderer;
-    const os = require('os');
+    //requirements
+    const {app, autoUpdater} = require('electron').remote
+    const fs = require('fs')
+    const path = require('path')
+    const shell = require('electron').shell
+    const ipcRenderer = require('electron').ipcRenderer
+    const os = require('os')
+    const ffbinaries = require('ffbinaries')
+    const ffmpeg = require('fluent-ffmpeg')
+    const videoshow = require('videoshow')
 
-    let testing = false;
+    //development
+    const testing = true
 
-    let ffbinaries = require('ffbinaries');
-    let ffmpeg = require('fluent-ffmpeg');
-    let videoshow = require('videoshow');
-
-    let userDataPath = app.getPath('userData');
-
-    let settingsFileLocation =  userDataPath + '/userSettings.json';
-    let userSettings = null;
-
-    let timelapseLength = 10;
-    let secondsBetweenPhotos = 1;
-    let cameraTimeout = 4;
-    let formatBetweenPhotos = 'seconds';
-
-    let readyToTakePhoto = null;
-    let barProgress = null;
-
-    let width = 1280;
-    let height = 720;
-
-    let currentPhoto = null;
-    let photoCount = 0;
-    let cameraReady = false;
-
-    let video = null;
-    let canvas = null;
-    let imageData = null;
-    let justImage = null;
-    let imageBugger = null;
-    let photo = null;
-    let photos = null;
-    let photoArray = null;
-    let photoContainer = null;
-    let removeButton = null;
-    let startButton = null;
-    let status = null;
-    let flashArea = null;
-    let numPhotosTaken = null;
-    let flash = null;
-    let controls = null;
-    let settings = null;
-    let menuButton = null;
-    let spinner = null;
-    let checkbox = null;
-
-    let timelapseRunning = false;
-
-    let appName = app.getName();
-    let appVersion = app.getVersion();
-
-    let photosPath = path.join(app.getPath('pictures'), appName);
-    let timelapseDirectoryName = null;
-    let videoPath = null;
-
-    let binaryDest = userDataPath + '/Binaries';
-    let videoFiles = [];
-    let videoOptions = {
-        fps: 30,
-        loop: 0.3, // seconds
-        transition: false,
-        transitionDuration: 0, // seconds
-        videoBitrate: 5000,
-        videoCodec: 'libx264',
-        size: '1280x720',
+    // constants
+    const appName = app.getName()
+    const appVersion = require('./package.json').version
+    const photosPath = path.join(app.getPath('pictures'), appName)
+    const userDataPath = app.getPath('userData')
+    const binaryDest = userDataPath + '/Binaries'
+    const settingsFileLocation =  userDataPath + '/userSettings.json'
+    
+    const videoOptions = {
         // audioBitrate: '128k',
         // audioChannels: 2,
         format: 'mp4',
-        pixelFormat: 'yuv420p'
+        fps: 30,
+        loop: 0.3, // seconds
+        pixelFormat: 'yuv420p',
+        size: '1280x720',
+        transition: false,
+        transitionDuration: 0, // seconds
+        videoBitrate: 5000,
+        videoCodec: 'libx264'
     }
 
-    let updateUserSettings = function() {
-        try { fs.writeFileSync(settingsFileLocation, JSON.stringify(userSettings, null, 4)); }
-        catch(e) { console.log('Failed to save the user settings file!'); }
+    // window
+    const height = 720
+    const width = 1280
+
+    // global
+    // TODO figure out how to remove this need for assigning variables here
+    let barProgress = null
+    let cameraReady = false
+    let cameraTimeout = 4
+    let canvas = null
+    let checkbox = null
+    let controls = null
+    let currentPhoto = null
+    let flash = null
+    let flashArea = null
+    let formatBetweenPhotos = 'seconds'
+    let imageBugger = null
+    let imageData = null
+    let justImage = null
+    let menuButton = null
+    let numPhotosTaken = null
+    let photo = null
+    let photoArray = null
+    let photoContainer = null
+    let photoCount = 0
+    let photos = null
+    let progressBar = null
+    let progressWrapper = null
+    let readyToTakePhoto = null
+    let removeButton = null
+    let secondsBetweenPhotos = 4
+    let settings = null
+    let spinner = null
+    let startButton = null
+    let status = null
+    let timelapseDirectoryName = null
+    let timelapseLength = 30
+    let timelapseRunning = false
+    let userSettings = null
+    let video = null
+    let videoFiles = []
+    let videoPath = null
+
+    const updateUserSettings = function() {
+        try { fs.writeFileSync(settingsFileLocation, JSON.stringify(userSettings, null, 4)) }
+        catch(e) { console.log('Failed to save the user settings file!') }
         finally {
-            userSettings = require(settingsFileLocation);
-            console.log('User settings updated');
+            userSettings = require(settingsFileLocation)
+            console.log('User settings updated')
         }
     }
 
-    let changeButtonType = function(btn, value) {
-        btn.title = value;
-        btn.innerHTML = value;
-        btn.className = value;
+    const changeButtonType = function(btn, value) {
+        btn.title = value
+        btn.innerHTML = value
+        btn.className = value
     }
 
     function init() {
-        let downloadFfbinaries = function() {
+        const downloadFfbinaries = function() {
             if (!fs.existsSync(binaryDest)) {
                 // downloads required ffmpeg binary for video conversion
+                console.log('Downloading binaries')
                 ffbinaries.downloadFiles(['ffmpeg', 'ffprobe'], {
                     platform: 'osx-64',
-                    quiet: true,
+                    quiet: false,
                     destination: binaryDest
                 }, function () {
-                    ffmpeg.setFfmpegPath(binaryDest + '/ffmpeg');
-                    console.log('Downloaded ffmpeg to ' + binaryDest + '.');
-                });
+                    ffmpeg.setFfmpegPath(binaryDest + '/ffmpeg')
+                    console.log('Downloaded ffmpeg to ' + binaryDest + '.')
+                })
             } else {
-                ffmpeg.setFfmpegPath(binaryDest + '/ffmpeg');
+                ffmpeg.setFfmpegPath(binaryDest + '/ffmpeg')
             }
-        }();
+        }()
 
-        let createPhotosDirectory = function() {
+        const createPhotosDirectory = function() {
             if (!fs.existsSync(photosPath)) {
-                fs.mkdirSync(photosPath);
+                fs.mkdirSync(photosPath)
                 console.log('New photo folder created')
             }
-        }();
+        }()
 
-        let getUserSettings = function() {
+        const getUserSettings = function() {
             // TODO generate real unique ID
-            let userId = 'user-' + new Date().toISOString().slice(0, 10) + '-' + new Date().getHours() + new Date().getMinutes() + new Date().getSeconds();
+            const userId = (
+                'user-' + new Date().toISOString().slice(0, 10) +
+                '-' + new Date().getHours() +
+                new Date().getMinutes() +
+                new Date().getSeconds()
+            )
 
-            let userSettingsTemplate = {
+            const userSettingsTemplate = {
                 "user": {
-                    "appVersion": appVersion,
-                    "userId": userId,
-                    "created": new Date(),
                     "appOpens": null,
+                    "appVersion": appVersion,
+                    "created": new Date(),
                     "photosTaken": null,
                     "timelapseComplete": null,
+                    "userId": userId,
                     "userNotifications": true,
                 },
                 "system": {
-                    "platform": os.platform(),
-                    "release": os.release(),
                     "architecture": os.arch(),
                     "homeDirectory": os.homedir(),
+                    "platform": os.platform(),
+                    "release": os.release(),
                     "tempDirectory": os.tmpdir(),
                 }
-            };
+            }
 
             if (!fs.existsSync(settingsFileLocation)) {
-                try { fs.writeFileSync(settingsFileLocation, JSON.stringify(userSettingsTemplate, null, 4)); }
-                catch(e) { console.log('Failed to save the user settings file!'); }
+                try { fs.writeFileSync(settingsFileLocation,
+                    JSON.stringify(userSettingsTemplate, null, 4))
+                }
+                catch(e) { console.log('Failed to save the user settings file!') }
                 finally {
-                    userSettings = require(settingsFileLocation);
-                    console.log('New user settings file created.');
+                    userSettings = require(settingsFileLocation)
+                    console.log('New user settings file created.')
                 }
             } else {
-                userSettings = require(settingsFileLocation);
+                userSettings = require(settingsFileLocation)
             }
 
             // increases appOpens by 1
-            userSettings.user.appVersion = appVersion;
-            ++userSettings.user.appOpens;
-            updateUserSettings();
-        }();
+            userSettings.user.appVersion = appVersion
+            ++userSettings.user.appOpens
+            updateUserSettings()
+        }()
 
-        // global letiables
-        video = document.getElementById('video');
-        playback = document.getElementById('playback');
-        canvas = document.getElementById('canvas');
-        photos = document.getElementById('photos');
-        status = document.getElementById('status');
-        flashArea = document.getElementById('flash-area');
-        numPhotosTaken = document.getElementById('photo-count');
-        startButton = document.getElementById('start-button');
-        createVideoButton = document.getElementById('create-video-button');
-        clearAllButton = document.getElementById('clear-all');
-        controls = document.getElementById('controls');
-        timelapseOptions = document.getElementById('timelapse-options');
-        playbackControls = document.getElementById('playback-controls');
-        btnClosePlayback = document.getElementById('btn-close-playback');
-        btnPlayPause = document.getElementById('btn-play-pause');
-        btnShowFile = document.getElementById('btn-show-file');
-        btnOpenFile = document.getElementById('btn-open-file');
-        menuButton = document.getElementById('menu-button');
-        spinner = document.getElementById('spinner');
-        settings = document.getElementById('settings');
-        progressWrapper = document.getElementById('progress-wrapper');
-        progressBar = document.getElementById('progress-bar');
-        settingsAppVersion = document.getElementById('app-version');
-        checkbox = document.querySelectorAll('input[type=checkbox]');
+        // assign all UI items, this could be avoided by using React
+        btnClosePlayback = document.getElementById('btn-close-playback')
+        btnOpenFile = document.getElementById('btn-open-file')
+        btnPlayPause = document.getElementById('btn-play-pause')
+        btnShowFile = document.getElementById('btn-show-file')
+        canvas = document.getElementById('canvas')
+        checkbox = document.querySelectorAll('input[type=checkbox]')
+        clearAllButton = document.getElementById('clear-all')
+        controls = document.getElementById('controls')
+        createVideoButton = document.getElementById('create-video-button')
+        flashArea = document.getElementById('flash-area')
+        menuButton = document.getElementById('menu-button')
+        numPhotosTaken = document.getElementById('photo-count')
+        photos = document.getElementById('photos')
+        playback = document.getElementById('playback')
+        playbackControls = document.getElementById('playback-controls')
+        progressBar = document.getElementById('progress-bar')
+        progressWrapper = document.getElementById('progress-wrapper')
+        settings = document.getElementById('settings')
+        settingsAppVersion = document.getElementById('app-version')
+        spinner = document.getElementById('spinner')
+        startButton = document.getElementById('start-button')
+        status = document.getElementById('status')
+        timelapseOptions = document.getElementById('timelapse-options')
+        video = document.getElementById('video')
 
-        settingsAppVersion.innerHTML = "Version " + appVersion;
+        settingsAppVersion.innerHTML = "Version " + appVersion
 
-        let genereateTimelapseOptions = function() {
+        const genereateTimelapseOptions = function() {
             // TODO refactor function to auto create all event listeners based on querySelectorAll
-            // options = document.querySelectorAll('.option');
-            totalDurationTime = document.getElementById('total-duration-time');
-            totalDurationFormat = document.getElementById('total-duration-format');
-            shutterTimingTime = document.getElementById('shutter-timing-time');
-            shutterTimingFormat = document.getElementById('shutter-timing-format');
+            // options = document.querySelectorAll('.option')
+            totalDurationTime = document.getElementById('total-duration-time')
+            totalDurationFormat = document.getElementById('total-duration-format')
+            shutterTimingTime = document.getElementById('shutter-timing-time')
+            shutterTimingFormat = document.getElementById('shutter-timing-format')
 
             totalDurationTime.addEventListener('change', function() {
                 timelapseLength = this.value
 
-                console.log(timelapseLength);
+                console.log(timelapseLength)
             })
 
             totalDurationFormat.addEventListener('change', function() {
                 timelapseFormat = this.value
-                console.log(value);
+                console.log(value)
             })
 
             shutterTimingTime.addEventListener('change', function() {
@@ -212,119 +220,119 @@
             shutterTimingFormat.addEventListener('change', function() {
                 formatBetweenPhotos = this.value
             })
-        }();
+        }()
 
-        renderControls().then(turnOnCamera);
+        renderControls().then(turnOnCamera)
 
         // add event listeners to controls
         startButton.addEventListener('click', function(ev){
 
             // resets state of app before starting a new timelapse
             if (timelapseRunning == false) {
-                timelapseRunning = true;
-                reset(timelapse);
+                timelapseRunning = true
+                reset(timelapse)
             } else {
-                timelapseFinished();
+                timelapseFinished()
                 console.error('User stopped timelapse')
             }
-            ev.preventDefault();
-        }, false);
+            ev.preventDefault()
+        }, false)
 
         createVideoButton.addEventListener('click', function(ev){
-            makeVideo();
-            ev.preventDefault();
-        }, false);
+            makeVideo()
+            ev.preventDefault()
+        }, false)
 
         clearAllButton.addEventListener('click', function(ev){
-            reset();
-            ev.preventDefault();
-        }, false);
+            reset()
+            ev.preventDefault()
+        }, false)
 
         menuButton.addEventListener('click', function(ev){
             if (controls.classList.contains('animate-controls')) {
-                controls.classList.remove('animate-controls');
-                video.classList.remove('blur');
+                controls.classList.remove('animate-controls')
+                video.classList.remove('blur')
             } else {
-                controls.classList.add('animate-controls');
-                video.classList.add('blur');
+                controls.classList.add('animate-controls')
+                video.classList.add('blur')
             }
             
-            ev.preventDefault();
-        }, false);
+            ev.preventDefault()
+        }, false)
 
         checkbox.forEach(function(elem) {
             // set checked states of user settings
-            elem.checked = userSettings.user[elem.name];
+            elem.checked = userSettings.user[elem.name]
 
             elem.addEventListener('change', function() {
                 if (this.checked == true) {
-                    this.checked = true;
-                    userSettings.user[this.name] = true;
+                    this.checked = true
+                    userSettings.user[this.name] = true
                 } else {
-                    this.checked = false;
-                    userSettings.user[this.name] = false;
+                    this.checked = false
+                    userSettings.user[this.name] = false
                 }
-                updateUserSettings();
+                updateUserSettings()
             })
-        });
+        })
 
         btnClosePlayback.addEventListener('click', function(ev){
-            closePlayback();
+            closePlayback()
 
-            ev.preventDefault();
-        }, false);
+            ev.preventDefault()
+        }, false)
 
         btnOpenFile.addEventListener('click', function(ev){
-            shell.openItem(videoPath);
+            shell.openItem(videoPath)
 
-            ev.preventDefault();
-        }, false);
+            ev.preventDefault()
+        }, false)
 
         btnShowFile.addEventListener('click', function(ev){
             shell.showItemInFolder(videoPath)
 
-            ev.preventDefault();
-        }, false);
+            ev.preventDefault()
+        }, false)
 
         btnPlayPause.addEventListener('click', function(ev) {
             if (playback.paused || playback.ended) {
                 // Change the button to a pause button
-                changeButtonType(btnPlayPause, 'Pause');
-                playback.play();
+                changeButtonType(btnPlayPause, 'Pause')
+                playback.play()
             }
             else {
                 // Change the button to a play button
-                changeButtonType(btnPlayPause, 'Play');
-                playback.pause();
+                changeButtonType(btnPlayPause, 'Play')
+                playback.pause()
             }
 
-            ev.preventDefault();
-        }, false);
+            ev.preventDefault()
+        }, false)
 
         // Add a listener for the play and pause events so the buttons state can be updated
         playback.addEventListener('play', function() {
             // Change the button to be a pause button
-            changeButtonType(btnPlayPause, 'Pause');
-        }, false);
+            changeButtonType(btnPlayPause, 'Pause')
+        }, false)
       
         playback.addEventListener('pause', function() {
             // Change the button to be a play button
-            changeButtonType(btnPlayPause, 'Play');
-        }, false);
+            changeButtonType(btnPlayPause, 'Play')
+        }, false)
     }
 
-    let closePlayback = function() {
-        playback.className = "fadeOut";
-        playbackControls.className = "fadeOutDown";
-        photos.className = "fadeInOnce";
+    const closePlayback = function() {
+        playback.className = "fadeOut"
+        playbackControls.className = "fadeOutDown"
+        photos.className = "fadeInOnce"
 
         setTimeout(function() {
-            playback.src = "";
-            renderControls();
-        }, 500);
+            playback.src = ""
+            renderControls()
+        }, 500)
     }
 
-    let notifyUser = function(notifTitle, notifBody) {
+    const notifyUser = function(notifTitle, notifBody) {
         // notify user of something via the notification system
         if (userSettings.user.userNotifications == true) {
             let notif = new window.Notification(notifTitle, {
@@ -338,53 +346,53 @@
         }
     }
 
-    let reset = function(callback)  { 
+    const reset = function(callback)  { 
         // removes status element from dom
-        status.innerHTML = "";
-        spinner.className = "hide";
-        createVideoButton.disabled = true;
-        clearAllButton.disabled = true;
+        status.innerHTML = ""
+        spinner.className = "hide"
+        createVideoButton.disabled = true
+        clearAllButton.disabled = true
 
         // clears out all photo atributes
-        numPhotosTaken.innerHTML = "";
-        photoCount = 0;
+        numPhotosTaken.innerHTML = ""
+        photoCount = 0
 
         if (cameraReady == false) {
-            turnOnCamera();
+            turnOnCamera()
         }
 
         // clears out photos in dom
         if (photos.children.length > 0) {
-            photos.innerHTML = "";
+            photos.innerHTML = ""
         }
 
         // starts timelapse
         // TODO change to promise
         if (callback) {
-            callback();
+            callback()
         }
     }
 
-    let renderControls = function() {
-        controls.className = 'fadeInUp';
+    const renderControls = function() {
+        controls.className = 'fadeInUp'
 
         return new Promise(function(resolve, reject) {
             setTimeout(function(){
-                resolve();
-            }, 1000);
-        });
+                resolve()
+            }, 1000)
+        })
     }
 
-    let hideControls = function() {
-        controls.className = 'fadeOutDown';
+    const hideControls = function() {
+        controls.className = 'fadeOutDown'
     }
 
-    let turnOnCamera = function() {
+    const turnOnCamera = function() {
 
         if (testing) {
-            status.innerHTML = "camera on";
-            cameraReady = true;
-            return;
+            status.innerHTML = "camera on"
+            cameraReady = true
+            return
         }
 
         if (navigator.mediaDevices.getUserMedia) {
@@ -395,307 +403,315 @@
                 }
             })
             .then(function(stream) {
-                console.log("- warming up camera");
-                cameraReady = false;
-                status.innerHTML = "Warming up camera...";
-                video.srcObject = stream;
-                window.localStream = stream;
+                console.log("- warming up camera")
+                cameraReady = false
+                status.innerHTML = "Warming up camera..."
+                video.srcObject = stream
+                window.localStream = stream
 
                 video.onloadedmetadata = function(e) {
-                    cameraReady = true;
-                    console.log('* video feed live');
+                    cameraReady = true
+                    console.log('* video feed live')
 
-                    video.className = 'fadeInOnce';
-                    status.innerHTML = "";
+                    video.className = 'fadeInOnce'
+                    status.innerHTML = ""
 
                     localStream.getTracks()[0].onended = function(event) {
                         if (testing) {
                             console.log('camera off')
                         }
                     }
-                };
+                }
             })
             .catch(function() {
-                console.log('x could not connect to camera');
-                status.innerHTML = "Could not connect to camera!";
-            });
+                console.log('x could not connect to camera')
+                status.innerHTML = "Could not connect to camera!"
+            })
         } else {
-            status.innerHTML = "Sorry, can't find your webcam.";
-            console.log("getUserMedia not supported.");
+            status.innerHTML = "Sorry, can't find your webcam."
+            console.log("getUserMedia not supported.")
         }
     }
 
-    let turnOffCamera = function() {
+    const turnOffCamera = function() {
 
         if (testing) {
-            status.innerHTML = "";
-            return;
+            status.innerHTML = ""
+            return
         }
 
-        video.className = "fadeOut";
+        video.className = "fadeOut"
         
 
         setTimeout(function() {
-            cameraReady = false;
-            localStream.getTracks()[0].stop();
-        }, 1000);
+            cameraReady = false
+            localStream.getTracks()[0].stop()
+        }, 1000)
     }
 
-    let showPhoto = function() {
-        photo.classList.remove("hide");
-        photo.classList.add("fadeInRight");
+    const showPhoto = function() {
+        photo.classList.remove("hide")
+        photo.classList.add("fadeInRight")
     }
 
-    let hidePhoto = function() {
-        photo.classList.remove("fadeInRight");
-        photo.classList.add("hide");
+    const hidePhoto = function() {
+        photo.classList.remove("fadeInRight")
+        photo.classList.add("hide")
     }
 
-    let takePhoto = function() {
+    const takePhoto = function() {
         if (flash !== null) {
-            flash.parentNode.removeChild(flash);
+            flash.parentNode.removeChild(flash)
         }
 
         // creates a flash effects
-        flash = document.createElement("div");
-        flash.setAttribute('id', "flash");
-        flash.className = 'flash';
-        flashArea.appendChild(flash);
+        flash = document.createElement("div")
+        flash.setAttribute('id', "flash")
+        flash.className = 'flash'
+        flashArea.appendChild(flash)
 
         // creates a new photo component
-        photoContainer = document.createElement("div");
-        photoContainer.setAttribute("id", "photo-" + photoCount);
-        photoContainer.className = "photo-container fadeInRight";
+        photoContainer = document.createElement("div")
+        photoContainer.setAttribute("id", "photo-" + photoCount)
+        photoContainer.className = "photo-container fadeInRight"
 
-        photo = document.createElement("img");
-        photo.className = "photo";
-        photoContainer.appendChild(photo);
+        photo = document.createElement("img")
+        photo.className = "photo"
+        photoContainer.appendChild(photo)
 
-        photos.appendChild(photoContainer);
+        photos.appendChild(photoContainer)
 
         // inserts a remove button
-        removeButton = document.createElement("div");
-        removeButton.className = "close-button";
-        photoContainer.appendChild(removeButton);
+        removeButton = document.createElement("div")
+        removeButton.className = "close-button"
+        photoContainer.appendChild(removeButton)
 
         // gathers all the photos taken into an array
-        let photoArray = Array.from(document.querySelectorAll('.close-button'));
+        let photoArray = Array.from(document.querySelectorAll('.close-button'))
 
         removeButton.addEventListener("click", function(ev){
-            let removePhoto = ev.target.classList.contains('close-button');
-            let index = photoArray.findIndex(el => el == ev.target);
+            let removePhoto = ev.target.classList.contains('close-button')
+            let index = photoArray.findIndex(el => el == ev.target)
 
             if (removePhoto) {
-                try { fs.unlinkSync(timelapseDirectoryName + '/timelapse-photo-' + index + '.png'); }
-                catch(e) { alert('Failed to remove photo!'); }
+                try { fs.unlinkSync(timelapseDirectoryName + '/timelapse-photo-' + index + '.png') }
+                catch(e) { alert('Failed to remove photo!') }
                 finally {
-                    document.getElementById("photo-" + index).parentNode.removeChild(document.getElementById("photo-" + index));
-                    photoCount --;
-                    numPhotosTaken.innerHTML = photoCount;
+                    document.getElementById("photo-" + index).parentNode.removeChild(document.getElementById("photo-" + index))
+                    photoCount --
+                    numPhotosTaken.innerHTML = photoCount
                     if (photoCount == 0) {
-                        reset();
+                        reset()
                     }
                 }
             }
 
-            ev.preventDefault();
-        }, false);
+            ev.preventDefault()
+        }, false)
 
         // captures image and adds new photo data to the dom
-        canvas.width = width;
-        canvas.height = height;
-        canvas.getContext("2d").drawImage(video, 0, 0, width, height);
-        photo.setAttribute("src", canvas.toDataURL("image/png"));
-        showPhoto();
+        canvas.width = width
+        canvas.height = height
+        canvas.getContext("2d").drawImage(video, 0, 0, width, height)
+        photo.setAttribute("src", canvas.toDataURL("image/png"))
+        showPhoto()
 
         if (secondsBetweenPhotos > cameraTimeout && timelapseRunning == true) {
-            turnOffCamera();
+            turnOffCamera()
         }
 
-        imageData = canvas.toDataURL("image/png");
-        justImage = imageData.replace(/^data:image\/\w+;base64,/, "");
-        imageBuffer = new Buffer(justImage, 'base64');
-        try { fs.writeFileSync(timelapseDirectoryName + '/timelapse-photo-' + photoCount + '.png', imageBuffer); }
-        catch(e) { alert('Failed to save the photo!'); }
+        imageData = canvas.toDataURL("image/png")
+        justImage = imageData.replace(/^data:image\/\w+;base64,/, "")
+        imageBuffer = new Buffer(justImage, 'base64')
+        try { fs.writeFileSync(timelapseDirectoryName + '/timelapse-photo-' + photoCount + '.png', imageBuffer) }
+        catch(e) { alert('Failed to save the photo!') }
         
-        // increment photo count and update display;
-        photoCount ++;
-        numPhotosTaken.innerHTML = photoCount;
+        // increment photo count and update display
+        photoCount ++
+        numPhotosTaken.innerHTML = photoCount
 
         // continues to scroll to the left as more photos come in
-        photos.scrollLeft = photos.scrollWidth - photos.clientWidth;
+        photos.scrollLeft = photos.scrollWidth - photos.clientWidth
 
         return new Promise(function(resolve, reject) {
-            resolve();
-        });
+            resolve()
+        })
     }
 
     let timelapseFinished = function() {
         // run after timelapse
-        timelapseRunning = false;
-        changeButtonType(startButton, 'Start');
-        createVideoButton.disabled = false;
-        clearAllButton.disabled = false;
-        video.className = "hide";
-        spinner.classList.remove("spin");
-        numPhotosTaken.innerHTML = photoCount;
-        console.log('photo count - ' + photoCount + ' timelapse length - ' + timelapseLength);
+        timelapseRunning = false
+        changeButtonType(startButton, 'Start')
+        createVideoButton.disabled = false
+        clearAllButton.disabled = false
+        video.className = "hide"
+        spinner.classList.remove("spin")
+        numPhotosTaken.innerHTML = photoCount
+        console.log('photo count - ' + photoCount + ' timelapse length - ' + timelapseLength)
 
-        turnOffCamera();
+        turnOffCamera()
 
-        notifyUser("Timelapse Finished", "Lapsey took " + photoCount + " photos.");
+        notifyUser("Timelapse Finished", "Lapsey took " + photoCount + " photos.")
 
         // increases timelapseComplete by 1 and adds photos to total count.
-        ++userSettings.user.timelapseComplete;
-        userSettings.user.photosTaken = userSettings.user.photosTaken + photoCount;
-        updateUserSettings();
+        ++userSettings.user.timelapseComplete
+        userSettings.user.photosTaken = userSettings.user.photosTaken + photoCount
+        updateUserSettings()
     }
 
-    let timelapse = function() {
-        changeButtonType(startButton, 'Stop');
-        spinner.className = "spin";
+    const timelapse = function() {
+        changeButtonType(startButton, 'Stop')
+        spinner.className = "spin"
 
         if (cameraReady == false) {
-            turnOnCamera();
+            turnOnCamera()
         }
 
-        let createTimelapseDirectory = function() {
-            timelapseDirectoryName = photosPath + '/timelapse-' + new Date().toISOString().slice(0, 10) + '-' + new Date().getHours() + new Date().getMinutes() + new Date().getSeconds();
+        const createTimelapseDirectory = function() {
+            timelapseDirectoryName = (photosPath + '/timelapse-' +
+                new Date().toISOString().slice(0, 10) +
+                '-' + new Date().getHours() +
+                new Date().getMinutes() +
+                new Date().getSeconds()
+            )
             if (!fs.existsSync(timelapseDirectoryName)) {
-                fs.mkdirSync(timelapseDirectoryName);
+                fs.mkdirSync(timelapseDirectoryName)
                 console.log('New timelapse folder created')
             }
-        }();
+        }()
 
-        let timelapseLoop = function() {
-            let count = 0;
+        const timelapseLoop = function() {
+            let count = 0
 
-            let waitForNextPhoto = function() {
+            const waitForNextPhoto = function() {
                 return new Promise(function(resolve, reject) {
                     setTimeout(function() {
-                        resolve();
-                    }, secondsBetweenPhotos * 1000);
-                });
+                        resolve()
+                    }, secondsBetweenPhotos * 1000)
+                })
             }
 
             if (!cameraReady && timelapseRunning) {
-                turnOnCamera();
+                turnOnCamera()
             }
 
+            // TODO why isn't this declaired here?
             readyToTakePhoto = function() {
                 // makes sure camera is ready to take a photo
                 if (cameraReady && timelapseRunning) {
                     if (photoCount == timelapseLength - 1) {
-                        takePhoto().then(timelapseFinished);
+                        takePhoto().then(timelapseFinished)
                     } else {
-                        takePhoto().then(waitForNextPhoto).then(timelapseLoop);
+                        takePhoto().then(waitForNextPhoto).then(timelapseLoop)
                     }
 
                 } else if (count >= 20) {
-                    timelapseFinished();
-                    console.error('camera not available');
+                    timelapseFinished()
+                    console.error('camera not available')
                 } else if (timelapseRunning) {
-                    count ++;
+                    count ++
                     setTimeout(function() {
-                        readyToTakePhoto();
+                        readyToTakePhoto()
                     }, 500)
                 }
             }
 
-            readyToTakePhoto();
+            readyToTakePhoto()
 
         }
 
-        timelapseLoop();
+        timelapseLoop()
     }
 
     let groupPhotos = function(callback) {
-        videoFiles = [];
+        videoFiles = []
 
         fs.readdir(timelapseDirectoryName, (err, files) => {
             files.forEach(file => {
                 if (path.extname(file) === '.' + 'png') {
                     videoFiles.push(timelapseDirectoryName + '/' + file)
                 }
-            });
+            })
             if (callback) {
-                callback();
+                callback()
             }
-        });
+        })
     }
 
-    let renderPlayback = function() {
-        hideControls();
-        photos.className = "fadeOutDown";
-        video.className = "hide";
+    const renderPlayback = function() {
+        hideControls()
+        photos.className = "fadeOutDown"
+        video.className = "hide"
 
         setTimeout(function(){
-            playbackControls.className = "fadeInUp";
-        }, 1000);
+            playbackControls.className = "fadeInUp"
+        }, 1000)
 
-        playback.src = videoPath;
-        playback.preload = "auto";
-        playback.controls = false;
-        playback.autoplay = false;
-        playback.className = "fadeInOnce";
+        playback.src = videoPath
+        playback.preload = "auto"
+        playback.controls = false
+        playback.autoplay = false
+        playback.className = "fadeInOnce"
     }
 
-    let buildVideo = function() {
-        updateProgressBar();
-        videoPath = timelapseDirectoryName + '/timelapse-video-' + new Date().toISOString().slice(0, 10) + '-' + new Date().getHours() + new Date().getMinutes() + new Date().getSeconds() + '.mp4';
+        const buildVideo = function() {
+        updateProgressBar()
+        videoPath = (timelapseDirectoryName + '/timelapse-video-' + new Date().toISOString().slice(0, 10) + '-' + new Date().getHours() + new Date().getMinutes() + new Date().getSeconds() + '.mp4')
 
         videoshow(videoFiles, videoOptions)
             .save(videoPath)
-            .on('start', function (command) {
+            .on('start', function(command) {
                 // console.log('ffmpeg process started:', command)
             })
+            // this built in function is broken so I use updateProgressBar instead
             // .on('progress', function(progress) {
                 // console.log('Processing: ' + progress.percent + '% done')
             // })
-            .on('error', function (err, stdout, stderr) {
+            .on('error', function(err, stdout, stderr) {
                 console.error('Error:', err)
                 console.error('ffmpeg stderr:', stderr)
             })
-            .on('end', function () {
-                console.log('Video created!');
-                document.getElementById("create-video-button").disabled = false;
-                progressBar.setAttribute("style", "transform: translateX(0%);");
+            .on('end', function() {
+                console.log('Video created!')
+                document.getElementById("create-video-button").disabled = false
+                progressBar.setAttribute("style", "transform: translateX(0%);")
 
-                notifyUser("Timelapse Video Exported", "Watch your timelapse now!");
+                notifyUser("Timelapse Video Exported", "Watch your timelapse now!")
 
-                setTimeout(function(){
-                    progressWrapper.className = "fadeOutUp";
-                }, 1000);
-                setTimeout(function(){
-                    progressBar.setAttribute("style", "transform: translateX(-100%);");
-                }, 2000);
+                setTimeout(function() {
+                    progressWrapper.className = "fadeOutUp"
+                }, 1000)
+                setTimeout(function() {
+                    progressBar.setAttribute("style", "transform: translateX(-100%);")
+                }, 2000)
 
-                renderPlayback();
+                renderPlayback()
             })
     }
 
-    let makeVideo = function() {
-        document.getElementById("create-video-button").disabled = true;
-        groupPhotos(buildVideo);
+    const makeVideo = function() {
+        document.getElementById("create-video-button").disabled = true
+        groupPhotos(buildVideo)
     }
 
-    let updateProgressBar = function() {
-        progressWrapper.className = "fadeInDown";
-        barProgress = photoCount;
-        barIncrements = 100 / barProgress;
-        barIncrements = Math.floor(barIncrements);
-        let barPosition = -100;
+    const updateProgressBar = function() {
+        progressWrapper.className = "fadeInDown"
+        barProgress = photoCount
+        barIncrements = (100 / barProgress)
+        barIncrements = Math.floor(barIncrements)
+        barPosition = -100;
 
+        // TODO there is a bug here somewhere
         (function moveProgress() {
-            barProgress --;
+            barProgress --
             if (barProgress > 0) {
-                barPosition += barIncrements;
-                progressBar.setAttribute("style", "transform: translateX(" + barPosition + "%) !important;");
-                setTimeout(moveProgress, 500);
+                barPosition += barIncrements
+                progressBar.setAttribute("style", "transform: translateX(" + barPosition + "%) !important;")
+                setTimeout(moveProgress, 500)
             }
-        })();
+        })()
     }
 
     // starts app once everything is loaded
-    window.addEventListener('load', init, false);
-})();
+    window.addEventListener('load', init, false)
+})()
