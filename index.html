@@ -6,6 +6,12 @@
         <link rel="stylesheet" href="app.css">
         <script src="app.js"></script>
     </head>
+    <script type="text/javascript">
+        const outputUpdate = function(label, title) {
+            document.querySelector('#' + title).value = label;
+            console.log(label, title)
+        }
+    </script>
     <body>
         <div id="playback-controls" class="hide">
             <div class="flex justify-between px2 mb1">
@@ -74,6 +80,34 @@
                 <br />
 
                 <div id="timelapse-options">
+                    <output
+                        for="frequency"
+                        id="frequencyLabel"
+                        style="color: #fff; font-size: 14px;">
+                    </output>
+                    <input id="frequency"
+                        style="width: 100%"
+                        min="0"
+                        max="100"
+                        step="10"
+                        type="range"
+                        list="tickmarks"
+                        oninput="outputUpdate(value, 'frequencyLabel')"
+                    >
+                    <datalist id="tickmarks">
+                      <option value="0" label="0:05">
+                      <option value="10" label="0:10">
+                      <option value="20" label="0:15">
+                      <option value="30" label="0:20">
+                      <option value="40" label="0:30">
+                      <option value="50" label="1:00">
+                      <option value="60" label="5:00">
+                      <option value="70" label="10:00">
+                      <option value="80" label="15:00">
+                      <option value="90" label="30:00">
+                      <option value="100" label="1:00:00">
+                    </datalist>
+
                     <div class="option">
                         <select id="total-duration-time" class="form-control">
                             <option value="" disabled="disabled">Total time</option>

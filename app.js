@@ -1,5 +1,5 @@
 (function() {
-    //requirements
+    // requirements
     const {app, autoUpdater} = require('electron').remote
     const fs = require('fs')
     const path = require('path')
@@ -10,7 +10,7 @@
     const ffmpeg = require('fluent-ffmpeg')
     const videoshow = require('videoshow')
 
-    //development
+    // development
     const testing = true
 
     // constants
@@ -93,10 +93,20 @@
         btn.className = value
     }
 
+    // TODO if user is offline then let them know that they need to connect
+    // when they come back online download binaries if needed
+    const updateOnLineStatus = () => {
+        console.error('internet connection changed')
+    }
+
+    window.addEventListener('online', updateOnLineStatus)
+    window.addEventListener('offline', updateOnLineStatus)
+
     function init() {
         const downloadFfbinaries = function() {
             if (!fs.existsSync(binaryDest)) {
-                // downloads required ffmpeg binary for video conversion
+                // TODO check to see if user is connected to the internet
+                // download required ffmpeg binary for video conversion
                 console.log('Downloading binaries')
                 ffbinaries.downloadFiles(['ffmpeg', 'ffprobe'], {
                     platform: 'osx-64',
