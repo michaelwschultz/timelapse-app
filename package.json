@@ -2,6 +2,8 @@
   "name": "Timelapse",
   "version": "0.0.1",
   "description": "App for taking timelapse videos via your desktop camera.",
+  "repository": "https://github.com/michaelwschultz/Timelapse-App",
+  "license": "MIT",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -13,7 +15,7 @@
     "videoshow": "^0.1.11"
   },
   "devDependencies": {
-    "electron": "^1.7.9",
-    "electron-packager": "^10.1.0"
+    "electron": "^1.8.1",
+    "electron-packager": "^10.1.1"
   }
 }
