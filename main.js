@@ -15,6 +15,24 @@ app.setLoginItemSettings({
     openAtLogin: false
 });
 
+// Improves security
+// https://github.com/electron/electron/blob/master/docs/tutorial/security.md
+app.on('web-contents-created', (event, contents) => {
+  contents.on('will-attach-webview', (event, webPreferences, params) => {
+    // Strip away preload scripts if unused or verify their location is legitimate
+    delete webPreferences.preload
+    delete webPreferences.preloadURL
+
+    // Disable node integration
+    webPreferences.nodeIntegration = false
+
+    // Verify URL being loaded is from my server
+    if (!params.src.startsWith('https://yourapp.com/')) {
+      event.preventDefault()
+    }
+  })
+})
+
 // This method will be called when Electron has done everything
 // initialization and ready for creating browser windows.
 app.on('ready', function() {
