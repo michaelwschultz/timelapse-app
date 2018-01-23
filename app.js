@@ -11,7 +11,7 @@
     const videoshow = require('videoshow')
 
     // development
-    const testing = true
+    const testing = false
 
     // constants
     const appName = app.getName()
@@ -39,11 +39,15 @@
     const height = 720
     const width = 1280
 
+    // timelapse settings
+    let cameraTimeout = 4
+    let secondsBetweenPhotos = 30
+    let timelapseLength = 30
+
     // global
     // TODO figure out how to remove this need for assigning variables here
     let barProgress = null
     let cameraReady = false
-    let cameraTimeout = 4
     let canvas = null
     let checkbox = null
     let controls = null
@@ -65,13 +69,11 @@
     let progressWrapper = null
     let readyToTakePhoto = null
     let removeButton = null
-    let secondsBetweenPhotos = 4
     let settings = null
     let spinner = null
     let startButton = null
     let status = null
     let timelapseDirectoryName = null
-    let timelapseLength = 30
     let timelapseRunning = false
     let userSettings = null
     let video = null
