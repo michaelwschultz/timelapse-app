@@ -1,4 +1,5 @@
 /release-builds
 /node_modules
 /updater/node_modules
+/updater/releases
 *.sketch

@@ -1,4 +1,5 @@
 # Timelapse app
+## https://github.com/michaelwschultz/timelapse-app
 #### Built by Michael Schultz http://michaelschultz.com
 Tiny desktop app that creates timelapse videos using your built in desktop/laptop camera.
 
@@ -15,6 +16,12 @@ This should install everything you need (including a local version of Electron) 
 $ npm install
 $ npm start
 ```
+
+---
+
+#### Building for OSX
+$ npm run build
+compress folder and place inside /updater/releases/
 
 ---
 
