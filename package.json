@@ -10,12 +10,14 @@
     "build": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=temp_icon.icns --prune=true --out=release-builds"
   },
   "dependencies": {
-    "ffbinaries": "^1.0.3",
+    "ffbinaries": "^1.1.0",
     "fluent-ffmpeg": "^2.1.2",
     "videoshow": "^0.1.11"
   },
   "devDependencies": {
-    "electron": "^1.8.1",
-    "electron-packager": "^10.1.2"
+    "electron": "^2.0.8",
+    "electron-packager": "^12.1.1",
+    "hoek": "^5.0.4",
+    "lodash": "^4.17.10"
   }
 }

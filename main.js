@@ -1,19 +1,18 @@
-const {app, BrowserWindow, autoUpdater} = require('electron')
+const {app, BrowserWindow, autoUpdater, session} = require('electron')
 const appVersion = require('./package.json').version
 
 const openAtLogin = false
 let mainWindow
 
-
 // point to update server
 let updateFeed = '//localhost:3000/updates/latest'
 if (process.env.NODE_ENV !== 'development') {
-  updateFeed = 'https://lapsey.com/updates/latest'
+    process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
+    updateFeed = 'https://schultz.co/timelapse/updates/latest'
 }
 
 // TODO app requires a certificate to run the updater
 // autoUpdater.setFeedURL(updateFeed + '?v=' + appVersion)
-
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function() {
@@ -30,27 +29,30 @@ app.setLoginItemSettings({
 // Improves security
 // https://github.com/electron/electron/blob/master/docs/tutorial/security.md
 app.on('web-contents-created', (event, contents) => {
-  contents.on('will-attach-webview', (event, webPreferences, params) => {
-    // Strip away preload scripts if unused or verify their location is legitimate
-    delete webPreferences.preload
-    delete webPreferences.preloadURL
+    contents.on('will-attach-webview', (event, webPreferences, params) => {
+        // Strip away preload scripts if unused or verify their location is legitimate
+        delete webPreferences.preload
+        delete webPreferences.preloadURL
 
-    // Disable node integration
-    webPreferences.nodeIntegration = false
+        // Disable node integration
+        webPreferences.nodeIntegration = false
 
-    // Verify URL being loaded is from my server
-    // if (!params.src.startsWith('https://localhost://')) {
-    //   event.preventDefault()
-    // }
-  })
+        // Verify URL being loaded is from my server
+        // if (!params.src.startsWith('https://schultz.co')) {
+        //   event.preventDefault()
+        // }
+    })
 })
 
 // This method will be called when Electron has done everything
 // initialization and ready for creating browser windows.
 app.on('ready', function() {
+    session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+        callback({responseHeaders: `default-src 'none'`})
+    })
+
     // Create the browser window.
     mainWindow = new BrowserWindow({
-        // titleBarStyle: 'hidden',
         width: 640,
         height: 360,
         resizable: false,

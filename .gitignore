@@ -1,5 +1,7 @@
-/release-builds
+/release_builds
 /node_modules
 /updater/node_modules
 /updater/releases
 *.sketch
+/dev-app-update.yml
+/electron-builder.yml
