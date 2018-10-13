@@ -16,7 +16,7 @@
   },
   "devDependencies": {
     "electron": "^2.0.8",
-    "electron-packager": "^12.1.1",
+    "electron-packager": "^12.2.0",
     "hoek": "^5.0.4",
     "lodash": "^4.17.10"
   }

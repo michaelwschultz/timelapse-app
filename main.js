@@ -56,6 +56,7 @@ app.on('ready', function() {
         width: 640,
         height: 360,
         resizable: false,
+        titleBarStyle: 'hidden',
         backgroundColor: '#131D2A',
         icon: __dirname + '/temp_icon.icns'
     })
