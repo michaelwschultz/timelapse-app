@@ -67,6 +67,62 @@ ul, li {
     transition: transform 0.3s ease-in-out;
 }
 
+#timelapse-options {
+    margin: 32px auto;
+    width: 408px;
+}
+
+#timelapse-options .timing button {
+    width: 100%;
+}
+
+#timelapse-options .timing button.active {
+    background-color: #13CC84;
+}
+
+#timelapse-options .option-group {
+    width: 186px;
+}
+
+#timelapse-options .option-group h4 {
+    color: white;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 16px;
+    text-align: center;
+}
+
+#timelapse-options input {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 48px;
+    outline: none;
+    text-align: center;
+    width: 72px;
+}
+
+#timelapse-options .option-button {
+    background: #1A293A;
+    width: 56px;
+    height: 48px;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#timelapse-options .option-button img {
+    width: 12px;
+    height: 24px;
+}
+
+#timelapse-options .option-button.right img {
+    transform: rotate(180deg);
+}
+
 .checkbox {
     position: relative;
     margin: 8px 0;

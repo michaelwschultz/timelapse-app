@@ -6,12 +6,12 @@
         <link rel="stylesheet" href="app.css">
         <script src="app.js"></script>
     </head>
-    <script type="text/javascript">
+    <!-- <script type="text/javascript">
         const outputUpdate = function(label, title) {
             document.querySelector('#' + title).value = label;
             console.log(label, title)
         }
-    </script>
+    </script> -->
     <body>
         <div id="playback-controls" class="hide">
             <div class="flex justify-between px2 mb1">
@@ -58,89 +58,77 @@
                     <span id="app-name" class="h4" style="color: white; pointer-events: none;">Lapsey</span>
                     <span id="app-version" class="h6" style="color: white; opacity: 0.2; pointer-events: none;"></span>
                 </div>
-                <ul>
-                    <li class="checkbox">
-                        <input type="checkbox" id="start-app-on-launch" name="startAppOnLaunch"></input>
-                        <label for="start-app-on-launch"></label>
-                        <span>Launch Lapsey on system startup</span>
-                    </li>
-                    <br />
-                    <li class="checkbox">
-                        <input type="checkbox" id="user-notifications" name="userNotifications"></input>
-                        <label for="user-notifications"></label>
-                        <span>Notifications (when timelapse finishes)</span>
-                    </li>
-                    <li class="checkbox">
-                        <input type="checkbox" id="save-before-quitting" name="saveBeforeQuitting"></input>
-                        <label for="save-before-quitting"></label>
-                        <span>Save before quitting</span>
-                    </li>
-                </ul>
+
+                <div id="timelapse-options" class="flex justify-between">
+                    <div class="option-group">
+                        <h4>Photo Frequency</h4>
+                        <div class="input-options flex items-center justify-between">
+                            <button id="frequency-down" class="option-button">
+                                <img src="chevron.png" />
+                            </button>
+                             <input id="photo-frequency"
+                                value="15"
+                                type="number"
+                            />
+                            <button id="frequency-up" class="option-button right">
+                                <img src="chevron.png" />
+                            </button>
+                        </div>
+                        <div class="timing flex items-center justify-between">
+                            <button id="frequency-time-s" value="s">
+                                S
+                            </button>
+                            <button id="frequency-time-m" value="m">
+                                M
+                            </button>
+                            <button id="frequency-time-h" value="h">
+                                H
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="option-group">
+                        <h4>Timelapse Duration</h4>
+                        <div class="input-options flex items-center justify-between">
+                            <button id="duration-down" class="option-button">
+                                <img src="chevron.png" />
+                            </button>
+                             <input id="timelapse-duration"
+                                value="15"
+                                type="number"
+                            />
+                            <button id="duration-up" class="option-button right">
+                                <img src="chevron.png" />
+                            </button>
+                        </div>
+                        <div class="timing flex items-center justify-between">
+                            <button id="duration-time-s" value="s">
+                                S
+                            </button>
+                            <button id="duration-time-m" value="m">
+                                M
+                            </button>
+                            <button id="duration-time-h" value="h">
+                                H
+                            </button>
+                        </div>
+                    </div>
+                </div>
 
                 <br />
 
-                <div id="timelapse-options">
-                    <output
-                        for="frequency"
-                        id="frequencyLabel"
-                        style="color: #fff; font-size: 14px;">
-                    </output>
-                    <input id="frequency"
-                        style="width: 100%"
-                        min="0"
-                        max="100"
-                        step="10"
-                        type="range"
-                        list="tickmarks"
-                        oninput="outputUpdate(value, 'frequencyLabel')"
-                    >
-                    <datalist id="tickmarks">
-                      <option value="0" label="0:05">
-                      <option value="10" label="0:10">
-                      <option value="20" label="0:15">
-                      <option value="30" label="0:20">
-                      <option value="40" label="0:30">
-                      <option value="50" label="1:00">
-                      <option value="60" label="5:00">
-                      <option value="70" label="10:00">
-                      <option value="80" label="15:00">
-                      <option value="90" label="30:00">
-                      <option value="100" label="1:00:00">
-                    </datalist>
-
-                    <div class="option">
-                        <select id="total-duration-time" class="form-control">
-                            <option value="" disabled="disabled">Total time</option>
-                            <option value="30">Infinite</option>
-                            <option>1</option>
-                            <option>2</option>
-                            <option>3</option>
-                        </select>
-                        <select id="total-duration-format" class="form-control" disabled>
-                            <option value="" disabled>Choose a time format</option>
-                            <option>seconds</option>
-                            <option>minutes</option>
-                            <option>hours</option>
-                        </select>
-                    </div>
-
-                    <div class="option">
-                        <select id="shutter-timing-time" class="form-control">
-                            <option value="" disabled>Time between photos</option>
-                            <option>2</option>
-                            <option>4</option>
-                            <option>10</option>
-                            <option>30</option>
-                            <option>60</option>
-                        </select>
-                        <select id="shutter-timing-format" class="form-control">
-                            <option value="" disabled>Choose a time format</option>
-                            <option>seconds</option>
-                            <option>minutes</option>
-                            <option>hours</option>
-                        </select>
-                    </div>
-                </div>
+                <ul>
+                    <li class="checkbox">
+                        <input type="checkbox" id="start-app-on-launch" name="startAppOnLaunch" />
+                        <label for="start-app-on-launch"></label>
+                        <span>Launch Lapsey on system startup</span>
+                    </li>
+                    <li class="checkbox">
+                        <input type="checkbox" id="user-notifications" name="userNotifications" />
+                        <label for="user-notifications"></label>
+                        <span>Notifications (when timelapse finishes)</span>
+                    </li>
+                </ul>
             </div>
         </div>
         <div id="flash-area">

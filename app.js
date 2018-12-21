@@ -11,7 +11,7 @@
     const videoshow = require('videoshow')
 
     // development
-    const testing = false
+    const testing = true
 
     // constants
     const appName = app.getName()
@@ -41,8 +41,8 @@
 
     // timelapse settings
     let cameraTimeout = 4
-    let secondsBetweenPhotos = 30
-    let timelapseLength = 30
+    let secondsBetweenPhotos = 5
+    let timelapseLength = 20
 
     // global
     // TODO figure out how to remove this need for assigning variables here
@@ -54,7 +54,7 @@
     let currentPhoto = null
     let flash = null
     let flashArea = null
-    let formatBetweenPhotos = 'seconds'
+    let formatBetweenPhotos = 'seconds' // not currently using this
     let imageBugger = null
     let imageData = null
     let justImage = null
@@ -200,12 +200,136 @@
         spinner = document.getElementById('spinner')
         startButton = document.getElementById('start-button')
         status = document.getElementById('status')
-        timelapseOptions = document.getElementById('timelapse-options')
+        // timelapseOptions = document.getElementById('timelapse-options')
         video = document.getElementById('video')
 
         settingsAppVersion.innerHTML = "Version " + appVersion
 
         const genereateTimelapseOptions = function() {
+            const timelapseDuration = document.getElementById('timelapse-duration')
+            const durationDown = document.getElementById('duration-down')
+            const durationUp = document.getElementById('duration-up')
+            const durationTimeS = document.getElementById('duration-time-s')
+            const durationTimeM = document.getElementById('duration-time-m')
+            const durationTimeH = document.getElementById('duration-time-h')
+
+            const photoFrequency = document.getElementById('photo-frequency')
+            const frequencyDown = document.getElementById('frequency-down')
+            const frequencyUp = document.getElementById('frequency-up')
+            const frequencyTimeS = document.getElementById('frequency-time-s')
+            const frequencyTimeM = document.getElementById('frequency-time-m')
+            const frequencyTimeH = document.getElementById('frequency-time-h')
+
+            timelapseDuration.value = timelapseLength
+            photoFrequency.value = secondsBetweenPhotos
+
+            let durationTime = 's'
+            let frequencyTime = 'm'
+
+
+            timelapseDuration.addEventListener("change", function() {
+                timelapseDuration.value = this.value
+                timelapseLength = this.value
+
+                console.log("Timelapse Duration " + timelapseDuration.value)
+            })
+
+            durationDown.addEventListener("click", function() {
+                timelapseDuration.value--
+                timelapseLength = timelapseDuration.value
+
+                console.log("Timelapse Duration " + timelapseDuration.value)
+            })
+
+            durationUp.addEventListener("click", function() {
+                timelapseDuration.value++
+                timelapseLength = timelapseDuration.value
+
+                console.log("Timelapse Duration " + timelapseDuration.value)
+            })
+
+            durationTimeS.addEventListener("click", function() {
+                durationTime = this.value
+                this.classList = "active"
+                durationTimeM.classList = ""
+                durationTimeH.classList = ""
+
+                console.log("Duration time changed to " + durationTime)
+            })
+
+            durationTimeM.addEventListener("click", function() {
+                durationTime = this.value
+                this.classList = "active"
+                durationTimeS.classList = ""
+                durationTimeH.classList = ""
+
+                console.log("Duration time changed to " + durationTime)
+            })
+
+            durationTimeH.addEventListener("click", function() {
+                durationTime = this.value
+                this.classList = "active"
+                durationTimeS.classList = ""
+                durationTimeM.classList = ""
+
+                console.log("Duration time changed to " + durationTime)
+            })
+
+
+
+            photoFrequency.addEventListener("change", function() {
+                photoFrequency.value = this.value
+                secondsBetweenPhotos = this.value
+
+                console.log("Timelapse Frequency " + photoFrequency.value)
+            })
+
+            frequencyDown.addEventListener("click", function() {
+                photoFrequency.value--
+                secondsBetweenPhotos = photoFrequency.value
+
+                console.log("Timelapse Frequency " + photoFrequency.value)
+            })
+
+            frequencyUp.addEventListener("click", function() {
+                photoFrequency.value++
+                secondsBetweenPhotos = photoFrequency.value
+
+                console.log("Timelapse Frequency " + photoFrequency.value)
+            })
+
+            frequencyTimeS.addEventListener("click", function() {
+                frequencyTime = this.value
+                this.classList = "active"
+                frequencyTimeM.classList = ""
+                frequencyTimeH.classList = ""
+
+                console.log("Frequency time changed to " + frequencyTime)
+            })
+
+            frequencyTimeM.addEventListener("click", function() {
+                frequencyTime = this.value
+                this.classList = "active"
+                frequencyTimeS.classList = ""
+                frequencyTimeH.classList = ""
+
+                console.log("Frequency time changed to " + frequencyTime)
+            })
+
+            frequencyTimeH.addEventListener("click", function() {
+                frequencyTime = this.value
+                this.classList = "active"
+                frequencyTimeS.classList = ""
+                frequencyTimeM.classList = ""
+
+                console.log("Frequency time changed to " + frequencyTime)
+            })
+
+        }()
+
+
+        // TRASH THIS
+        /* const genereateTimelapseOptions = function() {
             // TODO refactor function to auto create all event listeners based on querySelectorAll
             // options = document.querySelectorAll('.option')
             totalDurationTime = document.getElementById('total-duration-time')
@@ -232,7 +356,7 @@
             shutterTimingFormat.addEventListener('change', function() {
                 formatBetweenPhotos = this.value
             })
-        }()
+        }() */
 
         renderControls().then(turnOnCamera)
 
@@ -243,9 +367,10 @@
             if (timelapseRunning == false) {
                 timelapseRunning = true
                 reset(timelapse)
+                console.log('Timelapse started with a frequency of - ' + secondsBetweenPhotos + ' and duration of - ' + timelapseLength)
             } else {
                 timelapseFinished()
-                console.error('User stopped timelapse')
+                console.warn('User stopped timelapse')
             }
             ev.preventDefault()
         }, false)
@@ -528,7 +653,7 @@
         photo.setAttribute("src", canvas.toDataURL("image/png"))
         showPhoto()
 
-        if (secondsBetweenPhotos > cameraTimeout && timelapseRunning == true) {
+        if (timelapseLength > cameraTimeout && timelapseRunning == true) {
             turnOffCamera()
         }
 
