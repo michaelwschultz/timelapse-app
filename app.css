@@ -1,9 +1,13 @@
 html, body, video {
     margin: 0;
-    padding: 0;
     overflow: hidden;
     cursor: default;
     font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+}
+
+body {
+    -ms-overflow-style: scrollbar;
+    -webkit-app-region: drag;
 }
 
 /*custom horizontal scrollbar*/
@@ -63,6 +67,7 @@ ul, li {
     height: 4px;
     background-color: #13CC84;
     border-radius: 8px;
+    will-change: transform;
     transform: translateX(-100%);
     transition: transform 0.3s ease-in-out;
 }
@@ -203,14 +208,16 @@ input[type="checkbox"]:checked + label:after {
     width: 100%;
     height: 100%;
     top: 296px;
-    padding: 8px 0;
+    padding: 24px 0;
     background: #131D2A;
     opacity: 0.95;
+    will-change: transform;
     transition: transform 0.2s ease-in-out;
 }
 
 /* animates the controls panel up and down */
 .animate-controls {
+    will-change: transform;
     transform: translateY(-296px);
 }
 
@@ -261,6 +268,7 @@ button:hover, #menu-button:hover {
     padding: 0;
     margin: 0;
     filter: blur(0px);
+    will-change: transform;r
     transform: scale(1);
     transition: filter 0.2s ease-in, transform 0.2s ease-in;
     /* -webkit-transform: scaleX(-1); flips the video */
@@ -273,6 +281,7 @@ button:hover, #menu-button:hover {
     width: 100%;
     padding: 0;
     margin: 0;
+    will-change: transform;
     transition: filter 0.2s ease-in, transform 0.2s ease-in;
 }
 
@@ -376,6 +385,7 @@ button:hover, #menu-button:hover {
     text-align: center;
     bottom: 50%;
     left: 50%;
+    will-change: transform;
     transform: translate(-50%, -50%);
 }
 
