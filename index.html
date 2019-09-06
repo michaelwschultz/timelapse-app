@@ -1,154 +1,170 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Timelapse</title>
-        <link rel="stylesheet" href="basscss.css">
-        <link rel="stylesheet" href="app.css">
-        <script src="app.js"></script>
-    </head>
-    <!-- <script type="text/javascript">
+  <head>
+    <title>Timelapse</title>
+    <link rel="stylesheet" href="basscss.css" />
+    <link rel="stylesheet" href="app.css" />
+    <script src="app.js"></script>
+  </head>
+  <!-- <script type="text/javascript">
         const outputUpdate = function(label, title) {
             document.querySelector('#' + title).value = label;
             console.log(label, title)
         }
     </script> -->
-    <body>
-        <div id="playback-controls" class="hide">
-            <div class="flex justify-between px2 mb1">
-                <button id='btn-play-pause' title='Play'>
-                    Play
-                </button>
-                <div>
-                    <button id='btn-open-file' title='View in Quicktime'>
-                        View in Quicktime
-                    </button>
-                    <button id='btn-show-file' title='Go to video'>
-                        Go to video
-                    </button>
-                </div>
-                <button id='btn-close-playback' title='Back'>
-                    Back
-                </button>
+  <body>
+    <div id="playback-controls" class="hide">
+      <div class="flex justify-between px2 mb1">
+        <button id="btn-play-pause" title="Play">
+          Play
+        </button>
+        <div>
+          <button id="btn-open-file" title="View in Quicktime">
+            View in Quicktime
+          </button>
+          <button id="btn-show-file" title="Go to video">
+            Go to video
+          </button>
+        </div>
+        <button id="btn-close-playback" title="Back">
+          Back
+        </button>
+      </div>
+    </div>
+    <div id="controls" class="hide">
+      <div class="flex justify-between px2 mb1">
+        <div
+          class="absolute"
+          style="width: 28px; height: 28px; left: 50%; margin-left: -14px"
+        >
+          <div id="spinner" class="hide"></div>
+          <div id="photo-count">
+            <!-- number of photos taken -->
+          </div>
+        </div>
+        <div class="flex">
+          <button id="menu-button">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+          </button>
+          <button id="clear-all" disabled>Clear All</button>
+        </div>
+        <div>
+          <button id="create-video-button" disabled>
+            Export Timelapse Video
+          </button>
+          <button id="start-button" title="Start">Start</button>
+        </div>
+      </div>
+
+      <div id="settings" class="mt2 px2">
+        <div class="flex justify-between items-center mb2">
+          <span
+            id="app-name"
+            class="h4"
+            style="color: white; pointer-events: none;"
+            >Timelapse</span
+          >
+          <span
+            id="app-version"
+            class="h6"
+            style="color: white; opacity: 0.2; pointer-events: none;"
+          ></span>
+        </div>
+
+        <div id="timelapse-options" class="flex justify-between">
+          <div class="option-group">
+            <h4>Photo Frequency</h4>
+            <div class="input-options flex items-center justify-between">
+              <button id="frequency-down" class="option-button">
+                <img src="assets/chevron.png" />
+              </button>
+              <input id="photo-frequency" value="15" type="number" />
+              <button id="frequency-up" class="option-button right">
+                <img src="assets/chevron.png" />
+              </button>
             </div>
-        </div>
-        <div id="controls" class="hide">
-            <div class="flex justify-between px2 mb1">
-                <div class="absolute" style="width: 28px; height: 28px; left: 50%; margin-left: -14px">
-                    <div id="spinner" class="hide"></div>
-                    <div id="photo-count">
-                        <!-- number of photos taken -->
-                    </div>
-                </div>
-                <div class="flex">
-                    <button id="menu-button">
-                        <div class="bar"></div>
-                        <div class="bar"></div>
-                        <div class="bar"></div>
-                    </button>
-                    <button id="clear-all" disabled>Clear All</button>
-                </div>
-                <div>
-                    <button id="create-video-button" disabled>Export Timelapse Video</button>
-                    <button id="start-button" title="Start">Start</button>
-                </div>
+            <div class="timing flex items-center justify-between">
+              <button id="frequency-time-s" value="s">
+                S
+              </button>
+              <button id="frequency-time-m" value="m">
+                M
+              </button>
+              <button id="frequency-time-h" value="h">
+                H
+              </button>
             </div>
+          </div>
 
-            <div id="settings" class="mt2 px2">
-                <div class="flex justify-between items-center mb2">
-                    <span id="app-name" class="h4" style="color: white; pointer-events: none;">Timelapse</span>
-                    <span id="app-version" class="h6" style="color: white; opacity: 0.2; pointer-events: none;"></span>
-                </div>
-
-                <div id="timelapse-options" class="flex justify-between">
-                    <div class="option-group">
-                        <h4>Photo Frequency</h4>
-                        <div class="input-options flex items-center justify-between">
-                            <button id="frequency-down" class="option-button">
-                                <img src="chevron.png" />
-                            </button>
-                             <input id="photo-frequency"
-                                value="15"
-                                type="number"
-                            />
-                            <button id="frequency-up" class="option-button right">
-                                <img src="chevron.png" />
-                            </button>
-                        </div>
-                        <div class="timing flex items-center justify-between">
-                            <button id="frequency-time-s" value="s">
-                                S
-                            </button>
-                            <button id="frequency-time-m" value="m">
-                                M
-                            </button>
-                            <button id="frequency-time-h" value="h">
-                                H
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="option-group">
-                        <h4>Timelapse Duration</h4>
-                        <div class="input-options flex items-center justify-between">
-                            <button id="duration-down" class="option-button">
-                                <img src="chevron.png" />
-                            </button>
-                             <input id="timelapse-duration"
-                                value="15"
-                                type="number"
-                            />
-                            <button id="duration-up" class="option-button right">
-                                <img src="chevron.png" />
-                            </button>
-                        </div>
-                        <div class="timing flex items-center justify-between">
-                            <button id="duration-time-s" value="s">
-                                S
-                            </button>
-                            <button id="duration-time-m" value="m">
-                                M
-                            </button>
-                            <button id="duration-time-h" value="h">
-                                H
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <br />
-
-                <ul>
-                    <li class="checkbox">
-                        <input type="checkbox" id="start-app-on-launch" name="startAppOnLaunch" />
-                        <label for="start-app-on-launch"></label>
-                        <span>Launch Lapsey on system startup</span>
-                    </li>
-                    <li class="checkbox">
-                        <input type="checkbox" id="user-notifications" name="userNotifications" />
-                        <label for="user-notifications"></label>
-                        <span>Notifications (when timelapse finishes)</span>
-                    </li>
-                </ul>
+          <div class="option-group">
+            <h4>Timelapse Duration</h4>
+            <div class="input-options flex items-center justify-between">
+              <button id="duration-down" class="option-button">
+                <img src="assets/chevron.png" />
+              </button>
+              <input id="timelapse-duration" value="15" type="number" />
+              <button id="duration-up" class="option-button right">
+                <img src="assets/chevron.png" />
+              </button>
             </div>
-        </div>
-        <div id="flash-area">
-            <!-- flash elements -->
-        </div>
-        <div id="status">
-            <!-- current status message -->
-        </div>
-        <div id="photos">
-            <!-- recent photos -->
-        </div>
-        <div id="progress-wrapper" class="hide">
-            <div id="progress-container">
-                <div id="progress-bar-background">
-                    <div id="progress-bar"></div>
-                </div>
+            <div class="timing flex items-center justify-between">
+              <button id="duration-time-s" value="s">
+                S
+              </button>
+              <button id="duration-time-m" value="m">
+                M
+              </button>
+              <button id="duration-time-h" value="h">
+                H
+              </button>
             </div>
+          </div>
         </div>
-        <video id="video" autoplay></video>
-        <video id="playback" class="hide"></video>
-        <canvas id="canvas"></canvas>
-    </body>
+
+        <br />
+
+        <ul>
+          <li class="checkbox">
+            <input
+              type="checkbox"
+              id="start-app-on-launch"
+              name="startAppOnLaunch"
+            />
+            <label for="start-app-on-launch"></label>
+            <span>Launch Lapsey on system startup</span>
+          </li>
+          <li class="checkbox">
+            <input
+              type="checkbox"
+              id="user-notifications"
+              name="userNotifications"
+            />
+            <label for="user-notifications"></label>
+            <span>Notifications (when timelapse finishes)</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div id="flash-area">
+      <!-- flash elements -->
+    </div>
+    <div id="status">
+      <!-- current status message -->
+    </div>
+    <div id="photos">
+      <!-- recent photos -->
+    </div>
+    <div id="progress-wrapper" class="hide">
+      <div id="progress-container">
+        <div id="progress-bar-background">
+          <div id="progress-bar"></div>
+        </div>
+      </div>
+    </div>
+    <video id="video" autoplay></video>
+    <video id="playback" class="hide"></video>
+    <canvas id="canvas"></canvas>
+  </body>
 </html>

@@ -7,17 +7,17 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "build": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=temp_icon.icns --prune=true --out=release-builds"
+    "build": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=assets/temp_icon.icns --prune=true --out=release_builds"
   },
   "dependencies": {
+    "@hapi/hoek": "^8.2.2",
     "ffbinaries": "^1.1.4",
     "fluent-ffmpeg": "^2.1.2",
     "videoshow": "github:michaelwschultz/videoshow"
   },
   "devDependencies": {
-    "electron": "^2.0.18",
-    "electron-packager": "^12.2.0",
-    "hoek": "^5.0.4",
-    "lodash": "^4.17.13"
+    "electron": "^6.0.7",
+    "electron-packager": "^14.0.5",
+    "lodash": "^4.17.15"
   }
 }
