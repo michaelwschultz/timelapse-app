@@ -11,7 +11,7 @@
     const videoshow = require('videoshow')
 
     // development
-    const testing = true
+    const testing = false
 
     // constants
     const appName = app.getName()
