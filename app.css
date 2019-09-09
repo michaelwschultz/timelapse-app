@@ -1,37 +1,31 @@
-/* :root {
+:root {
   --primary: #13CC84;
   --primary-d: #07336B;
   --primary-xd: #041A36;
   --primary-xxd: #000E20;
-} */
-
-:root {
-  --primary: red;
-  --primary-d: #07336B;
-  --primary-xd: #041A36;
-  --primary-xxd: #000E20;
 }
 
-
 html, body, video {
-    margin: 0;
-    overflow: hidden;
-    cursor: default;
-    font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+  margin: 0;
+  overflow: hidden;
+  cursor: default;
+  font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif;
 }
 
 body {
-    -ms-overflow-style: scrollbar;
-    -webkit-app-region: drag;
+  -ms-overflow-style: scrollbar;
+  -webkit-app-region: drag;
 }
 
 /*custom horizontal scrollbar*/
+
 ::-webkit-scrollbar {
-    height: 4px;
+  height: 4px;
 }
+
 ::-webkit-scrollbar-thumb {
-    border-radius: 8px;
-    background: var(--primary);
+  border-radius: 8px;
+  background: var(--primary);
 }
 
 /*::-webkit-scrollbar-thumb:window-inactive {
@@ -39,175 +33,184 @@ body {
 }*/
 
 ul, li {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    font-size: 14px;
-    letter-spacing: -0.3;
-    color: white;
-    font-weight: 200;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 14px;
+  letter-spacing: -0.3;
+  color: white;
+  font-weight: 200;
 }
 
 .form-control {
-    width: 100px;
+  width: 100px;
 }
 
 #progress-wrapper {
-    position: absolute;
-    z-index: 13;
-    width: 100%;
-    opacity: 0.95;
+  position: absolute;
+  z-index: 13;
+  width: 100%;
+  opacity: 0.95;
 }
 
 #progress-container {
-    margin: 16px;
-    padding: 8px;
-    border-radius: 4px;
-    background-color: #131D2A;
-    box-shadow: 0px 2px 10px rgba(0,0,0,0.5);
+  margin: 16px;
+  padding: 8px;
+  border-radius: 4px;
+  background-color: #131D2A;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.5);
 }
 
 #progress-bar-background {
-    position: relative;
-    width: 100%;
-    height: 4px;
-    overflow: hidden;
-    background-color: rgba(255,255,255,0.1);
-    border-radius: 8px;
+  position: relative;
+  width: 100%;
+  height: 4px;
+  overflow: hidden;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
 }
 
 #progress-bar {
-    position: absolute;
-    width: 100%;
-    height: 4px;
-    background-color: var(--primary);
-    border-radius: 8px;
-    will-change: transform;
-    transform: translateX(-100%);
-    transition: transform 0.3s ease-in-out;
+  position: absolute;
+  width: 100%;
+  height: 4px;
+  background-color: var(--primary);
+  border-radius: 8px;
+  will-change: transform;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease-in-out;
 }
 
 #timelapse-options {
-    margin: 32px auto;
-    width: 408px;
+  margin: 32px auto;
+  width: 408px;
 }
 
 #timelapse-options .timing button {
-    width: 100%;
+  width: 100%;
 }
 
 #timelapse-options .timing button.active {
-    background-color: var(--primary);
+  background-color: var(--primary);
 }
 
 #timelapse-options .option-group {
-    width: 186px;
+  width: 186px;
 }
 
 #timelapse-options .option-group h4 {
-    color: white;
-    font-size: 12px;
-    font-weight: 400;
-    line-height: 16px;
-    text-align: center;
+  color: white;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  text-align: center;
 }
 
 #timelapse-options input {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 24px;
-    font-weight: 700;
-    line-height: 48px;
-    outline: none;
-    text-align: center;
-    width: 72px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 48px;
+  outline: none;
+  text-align: center;
+  width: 72px;
 }
 
 #timelapse-options .option-button {
-    background: #1A293A;
-    width: 56px;
-    height: 48px;
-    border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  background: #1A293A;
+  width: 56px;
+  height: 48px;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 #timelapse-options .option-button img {
-    width: 12px;
-    height: 24px;
+  width: 12px;
+  height: 24px;
 }
 
 #timelapse-options .option-button.right img {
-    transform: rotate(180deg);
+  transform: rotate(180deg);
 }
 
 .checkbox {
-    position: relative;
-    margin: 8px 0;
+  position: relative;
+  margin: 8px 0;
 }
+
 .checkbox label {
-    width: 16px;
-    height: 16px;
-    cursor: pointer;
-    position: absolute;
-    top: 0;
-    left: 0;
-    background: #131D2A;
-    border: 1px solid rgba(255,255,255, 0.5);
-    border-radius: 2px;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: #131D2A;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 2px;
 }
 
 /*checkmark*/
+
 .checkbox label:after {
-    content: '';
-    width: 12px;
-    height: 12px;
-    top: 2px;
-    left: 2px;
-    border-radius: 2px;
-    position: absolute;
-    background: var(--primary);
-    opacity: 0;
+  content: '';
+  width: 12px;
+  height: 12px;
+  top: 2px;
+  left: 2px;
+  border-radius: 2px;
+  position: absolute;
+  background: var(--primary);
+  opacity: 0;
 }
+
 .checkbox label:hover {
-    border: 1px solid var(--primary);
+  border: 1px solid var(--primary);
 }
+
 /*.checkbox label:hover::after {
     opacity: 0.5;
 }*/
+
 input[type="checkbox"] {
-    visibility: hidden;
-}
-input[type="checkbox"]:checked + label:after {
-    opacity: 1;
-}
-.checkbox span {
-    line-height: 16px;
-    margin-left: 8px;
-    pointer-events: none;
+  visibility: hidden;
 }
 
-#spinner,
-#spinner,:after {
-    border-radius: 50%;
-    width: 24px;
-    height: 24px;
+input[type="checkbox"]:checked+label:after {
+  opacity: 1;
 }
+
+.checkbox span {
+  line-height: 16px;
+  margin-left: 8px;
+  pointer-events: none;
+}
+
+#spinner, #spinner, :after {
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+}
+
 #spinner {
-    position: absolute;
-    font-size: 2px;
-    text-indent: -9999em;
-    border-top: 1.1em solid rgba(255, 255, 255, 0.2);
-    border-right: 1.1em solid rgba(255, 255, 255, 0.2);
-    border-bottom: 1.1em solid rgba(255, 255, 255, 0.2);
-    border-left: 1.1em solid var(--primary);
-    transform: translateZ(0);
+  position: absolute;
+  font-size: 2px;
+  text-indent: -9999em;
+  border-top: 1.1em solid rgba(255, 255, 255, 0.2);
+  border-right: 1.1em solid rgba(255, 255, 255, 0.2);
+  border-bottom: 1.1em solid rgba(255, 255, 255, 0.2);
+  border-left: 1.1em solid var(--primary);
+  transform: translateZ(0);
 }
+
 .spin {
-    animation: spin 1s infinite linear;
+  animation: spin 1s infinite linear;
 }
+
 @keyframes spin {
   0% {
     transform: rotate(0deg);
@@ -218,342 +221,343 @@ input[type="checkbox"]:checked + label:after {
 }
 
 #controls, #playback-controls {
-    position: absolute;
-    z-index: 12;
-    width: 100%;
-    height: 100%;
-    top: 296px;
-    padding: 24px 0;
-    background: #131D2A;
-    opacity: 0.95;
-    will-change: transform;
-    transition: transform 0.2s ease-in-out;
+  position: absolute;
+  z-index: 12;
+  width: 100%;
+  height: 100%;
+  top: 296px;
+  padding: 24px 0;
+  background: #131D2A;
+  opacity: 0.95;
+  will-change: transform;
+  transition: transform 0.2s ease-in-out;
 }
 
 /* animates the controls panel up and down */
+
 .animate-controls {
-    will-change: transform;
-    transform: translateY(-296px);
+  will-change: transform;
+  transform: translateY(-296px);
 }
 
 button {
-    color: white;
-    font-size: 12px;
-    line-height: 28px;
-    font-weight: 400;
-    background: none;
-    outline: none;
-    border: none;
-    padding: 0 8px;
-    cursor: pointer;
-    opacity: 0.5;
+  color: white;
+  font-size: 12px;
+  line-height: 28px;
+  font-weight: 400;
+  background: none;
+  outline: none;
+  border: none;
+  padding: 0 8px;
+  cursor: pointer;
+  opacity: 0.5;
 }
 
 button:disabled, #button:disabled:hover {
-    opacity: 0;
-    pointer-events: none;
+  opacity: 0;
+  pointer-events: none;
 }
 
 #menu-button {
-    height: 28px;
-    outline: none;
-    border: none;
-    background: none;
-    padding: 0;
-    cursor: pointer;
-    opacity: 0.5;
+  height: 28px;
+  outline: none;
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  opacity: 0.5;
 }
 
 button:hover, #menu-button:hover {
-    opacity: 1;
+  opacity: 1;
 }
 
 .bar {
-    background-color: white;
-    width: 16px;
-    height: 1px;
-    margin: 4px 0;
+  background-color: white;
+  width: 16px;
+  height: 1px;
+  margin: 4px 0;
 }
 
 #video {
-    z-index: 6;
-    outline: none;
-    width: 100%;
-    height: 100%;
-    padding: 0;
-    margin: 0;
-    filter: blur(0px);
-    will-change: transform;r
-    transform: scale(1);
-    transition: filter 0.2s ease-in, transform 0.2s ease-in;
-    /* -webkit-transform: scaleX(-1); flips the video */
+  z-index: 6;
+  outline: none;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  filter: blur(0px);
+  will-change: transform;
+  r transform: scale(1);
+  transition: filter 0.2s ease-in, transform 0.2s ease-in;
+  /* -webkit-transform: scaleX(-1); flips the video */
 }
 
 #playback {
-    position: absolute;
-    z-index: 7;
-    outline: none;
-    width: 100%;
-    padding: 0;
-    margin: 0;
-    will-change: transform;
-    transition: filter 0.2s ease-in, transform 0.2s ease-in;
+  position: absolute;
+  z-index: 7;
+  outline: none;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  will-change: transform;
+  transition: filter 0.2s ease-in, transform 0.2s ease-in;
 }
 
 .blur {
-    transform: scale(1.04) !important;
-    filter: blur(5px) !important;
+  transform: scale(1.04) !important;
+  filter: blur(5px) !important;
 }
 
 #photos {
-    z-index: 8;
-    position: absolute;
-    width: 100%;
-    display: flex;
-    flex-flow: row nowrap;
-    overflow-x: auto;
-    bottom: 48px;
-    padding-bottom: 8px;
-    margin-left: 16px;
+  z-index: 8;
+  position: absolute;
+  width: 100%;
+  display: flex;
+  flex-flow: row nowrap;
+  overflow-x: auto;
+  bottom: 48px;
+  padding-bottom: 8px;
+  margin-left: 16px;
 }
 
 .photo-container {
-    position: relative;
-    padding-top: 8px;
-    padding-right: 8px;
+  position: relative;
+  padding-top: 8px;
+  padding-right: 8px;
 }
 
 .photo {
-    width: 128px;
-    height: 72px;
-    border: 2px solid white;
-    margin-right: 16px;
+  width: 128px;
+  height: 72px;
+  border: 2px solid white;
+  margin-right: 16px;
 }
 
 .close-button {
-    position: absolute;
-    top: 0;
-    right: 16px;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background-image: url('assets/x.png');
-    background-position: center;
-    background-repeat: no-repeat;
-    background-color: #000;
-    padding: 8px;
-    opacity: 0;
-    transition: opacity 0.1s ease-in;
+  position: absolute;
+  top: 0;
+  right: 16px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-image: url('assets/x.png');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: #000;
+  padding: 8px;
+  opacity: 0;
+  transition: opacity 0.1s ease-in;
 }
 
 .photo-container:hover .close-button {
-    opacity: 1;
-    cursor: pointer;
+  opacity: 1;
+  cursor: pointer;
 }
 
 .hide {
-    opacity: 0 !important;
+  opacity: 0 !important;
 }
 
 #canvas {
-    display: none;
-    width: 1280px;
-    height: 720px;
+  display: none;
+  width: 1280px;
+  height: 720px;
 }
 
 #flash-area {
-    position: absolute;
-    pointer-events: none;
-    width: 100%;
-    height: 100%;
+  position: absolute;
+  pointer-events: none;
+  width: 100%;
+  height: 100%;
 }
 
 #flash {
-    position: absolute;
-    z-index: 11;
-    pointer-events: none;
-    width: 100%;
-    height: 100%;
-    background-color: white;
-    opacity: 0;
+  position: absolute;
+  z-index: 11;
+  pointer-events: none;
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  opacity: 0;
 }
 
 #photo-count {
-    position: absolute;
-    width: 28px;
-    z-index: 9;
-    line-height: 28px;
-    pointer-events: none;
-    font-size: 10px;
-    text-align: center;
-    color: white;
-    opacity: 0.5;
+  position: absolute;
+  width: 28px;
+  z-index: 9;
+  line-height: 28px;
+  pointer-events: none;
+  font-size: 10px;
+  text-align: center;
+  color: white;
+  opacity: 0.5;
 }
 
 #status {
-    position: absolute;
-    pointer-events: none;
-    z-index: 9;
-    font-weight: 200;
-    color: var(--primary);
-    font-size: 16px;
-    text-align: center;
-    bottom: 50%;
-    left: 50%;
-    will-change: transform;
-    transform: translate(-50%, -50%);
+  position: absolute;
+  pointer-events: none;
+  z-index: 9;
+  font-weight: 200;
+  color: var(--primary);
+  font-size: 16px;
+  text-align: center;
+  bottom: 50%;
+  left: 50%;
+  will-change: transform;
+  transform: translate(-50%, -50%);
 }
 
 @keyframes fadeIn {
-    0% {
-        opacity: 0;
-    }
-    40% {
-        opacity: 1;
-    }
-    60% {
-        opacity: 1;
-    }
-    100% {
-        opacity: 0;
-    }
+  0% {
+    opacity: 0;
+  }
+  40% {
+    opacity: 1;
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 
 .fadeIn {
-    transform: translateZ(0);
-    animation-duration: 4s;
-    animation-fill-mode: both;
-    animation-transition: ease-in;
-    animation-iteration-count: infinite;
-    animation-name: fadeIn;
+  transform: translateZ(0);
+  animation-duration: 4s;
+  animation-fill-mode: both;
+  animation-transition: ease-in;
+  animation-iteration-count: infinite;
+  animation-name: fadeIn;
 }
 
 @keyframes fadeOut {
-    0% {
-        opacity: 1;
-    }
-    100% {
-        opacity: 0;
-    }
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 
 .fadeOut {
-    transform: translateZ(0);
-    animation-duration: 0.2s;
-    animation-fill-mode: both;
-    animation-transition: ease-in;
-    animation-name: fadeOut;
+  transform: translateZ(0);
+  animation-duration: 0.2s;
+  animation-fill-mode: both;
+  animation-transition: ease-in;
+  animation-name: fadeOut;
 }
 
 @keyframes fadeInOnce {
-    0% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 1;
-    }
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 .fadeInOnce {
-    transform: translateZ(0);
-    animation-duration: 1.5s;
-    animation-fill-mode: both;
-    animation-name: fadeInOnce;
+  transform: translateZ(0);
+  animation-duration: 1.5s;
+  animation-fill-mode: both;
+  animation-name: fadeInOnce;
 }
 
 @keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translate3d(0, 100%, 0);
-    }
-    to {
-        opacity: 0.95;
-        transform: none;
-    }
+  from {
+    opacity: 0;
+    transform: translate3d(0, 100%, 0);
+  }
+  to {
+    opacity: 0.95;
+    transform: none;
+  }
 }
 
 .fadeInUp {
-    animation-duration: 0.5s;
-    animation-name: fadeInUp;
+  animation-duration: 0.5s;
+  animation-name: fadeInUp;
 }
 
 @keyframes fadeInDown {
-    from {
-        opacity: 0;
-        transform: translate3d(0, -100%, 0);
-    }
-    to {
-        opacity: 0.95;
-        transform: none;
-    }
+  from {
+    opacity: 0;
+    transform: translate3d(0, -100%, 0);
+  }
+  to {
+    opacity: 0.95;
+    transform: none;
+  }
 }
 
 .fadeInDown {
-    animation-duration: 0.5s;
-    animation-name: fadeInDown;
+  animation-duration: 0.5s;
+  animation-name: fadeInDown;
 }
 
 @keyframes fadeOutUp {
-    from {
-        opacity: 0.95;
-        transform: none;
-    }
-    to {
-        opacity: 0;
-        transform: translate3d(0, -100%, 0);
-    }
+  from {
+    opacity: 0.95;
+    transform: none;
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(0, -100%, 0);
+  }
 }
 
 .fadeOutUp {
-    animation-duration: 0.5s;
-    animation-fill-mode: forwards;
-    animation-name: fadeOutUp;
+  animation-duration: 0.5s;
+  animation-fill-mode: forwards;
+  animation-name: fadeOutUp;
 }
 
 @keyframes fadeOutDown {
-    from {
-        opacity: 0.95;
-        transform: none;
-    }
-    to {
-        opacity: 0;
-        transform: translate3d(0, 100%, 0);
-    }
+  from {
+    opacity: 0.95;
+    transform: none;
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(0, 100%, 0);
+  }
 }
 
 .fadeOutDown {
-    animation-duration: 0.5s;
-    animation-fill-mode: forwards;
-    animation-name: fadeOutDown;
+  animation-duration: 0.5s;
+  animation-fill-mode: forwards;
+  animation-name: fadeOutDown;
 }
 
 @keyframes fadeInRight {
-    from {
-        opacity: 0;
-        transform: translate3d(100%, 0, 0);
-    }
-    to {
-        opacity: 1;
-        transform: none;
-    }
+  from {
+    opacity: 0;
+    transform: translate3d(100%, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 .fadeInRight {
-    animation-duration: 0.5s;
-    animation-name: fadeInRight;
+  animation-duration: 0.5s;
+  animation-name: fadeInRight;
 }
 
 @keyframes flash {
-    0% {
-        opacity: 1;
-    }
-    100% {
-        opacity: 0;
-    }
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 
 .flash {
-    animation-duration: .5s;
-    animation-fill-mode: both;
-    animation-name: flash;
+  animation-duration: .5s;
+  animation-fill-mode: both;
+  animation-name: flash;
 }
