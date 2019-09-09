@@ -3,7 +3,7 @@
 #### Built by Michael Schultz https://michaelschultz.com
 Tiny desktop app that creates timelapse videos using your built in desktop/laptop camera.
 
-![app screenshot](app-screenshot.jpg)
+![app screenshot](assets/app-screenshot.jpg)
 
 Timelapse is built on top of Electron https://github.com/electron/electron to make use of the desktop environment.
 

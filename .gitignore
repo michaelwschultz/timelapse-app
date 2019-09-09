@@ -1,7 +1,8 @@
-/release_builds
-/node_modules
-/updater/node_modules
-/updater/releases
+*.DS_Store
 *.sketch
 /dev-app-update.yml
 /electron-builder.yml
+/node_modules
+/release_builds
+/updater/node_modules
+/updater/releases

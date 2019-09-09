@@ -1,56 +1,59 @@
-'use strict'
-const fs = require('fs')
-const express = require('express')
-const path = require('path')
-const app = express()
+"use strict";
+const fs = require("fs");
+const express = require("express");
+const path = require("path");
+const app = express();
 
-process.env.NODE_ENV = 'development'
+process.env.NODE_ENV = "development";
 
-app.use(require('morgan')('dev'))
+app.use(require("morgan")("dev"));
 
-app.use('/', express.static(path.join(__dirname, 'releases')))
+app.use("/", express.static(path.join(__dirname, "releases")));
 
-console.log(__dirname)
+console.log(__dirname);
 
-app.get('/releases/latest', (req, res) => {
-  const latest = getLatestRelease()
-  const clientVersion = req.query.v
-  console.log(clientVersion)
+app.get("/releases/latest", (req, res) => {
+  const latest = getLatestRelease();
+  const clientVersion = req.query.v;
+  console.log(clientVersion);
 
-  console.log(latest, clientVersion)
+  console.log(latest, clientVersion);
 
   if (clientVersion === latest) {
-    console.warn("no update available")
-    res.status(204).end()
+    console.warn("no update available");
+    res.status(204).end();
   } else {
-        console.warn("time to update!")
+    console.warn("time to update!");
     res.json({
-      url: `${getBaseUrl()}/releases/${latest}/lapsey.zip`
-    })
+      url: `${getBaseUrl()}/releases/${latest}/lapsey.zip`,
+    });
   }
-})
+});
 
 let getLatestRelease = () => {
-  const dir = `${__dirname}/releases`
+  const dir = `${__dirname}/releases`;
 
-  const versionsDesc = fs.readdirSync(dir).filter((file) => {
-    const filePath = path.join(dir, file)
-    return fs.statSync(filePath).isDirectory()
-  }).reverse()
+  const versionsDesc = fs
+    .readdirSync(dir)
+    .filter(file => {
+      const filePath = path.join(dir, file);
+      return fs.statSync(filePath).isDirectory();
+    })
+    .reverse();
 
-  return versionsDesc[0]
-}
+  return versionsDesc[0];
+};
 
 let getBaseUrl = () => {
-  if (location.protocol !== "https:") location.protocol = "https:"
+  if (location.protocol !== "https:") location.protocol = "https:";
 
-  if (process.env.NODE_ENV === 'development') {
-    return '//localhost:3000'
+  if (process.env.NODE_ENV === "development") {
+    return "//localhost:3000";
   } else {
-    return '//schultz.co'
+    return "//schultz.co";
   }
-}
+};
 
 app.listen(process.env.PORT, () => {
-  console.log(`Express server listening on port ${process.env.PORT}`)
-})
+  console.log(`Express server listening on port ${process.env.PORT}`);
+});

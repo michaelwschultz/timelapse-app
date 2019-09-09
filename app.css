@@ -337,7 +337,7 @@ button:hover, #menu-button:hover {
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background-image: url('x.png');
+    background-image: url('assets/x.png');
     background-position: center;
     background-repeat: no-repeat;
     background-color: #000;
