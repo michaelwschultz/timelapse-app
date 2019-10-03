@@ -1,6 +1,5 @@
 # Timelapse app
-## https://github.com/michaelwschultz/timelapse-app
-#### Built by Michael Schultz https://michaelschultz.com
+#### Designed & built by Michael Schultz https://michaelschultz.com
 Tiny desktop app that creates timelapse videos using your built in desktop/laptop camera.
 
 ![app screenshot](assets/app-screenshot.jpg)
@@ -31,3 +30,10 @@ compress folder and place inside /updater/releases/
 The app creates an application folder located at (/Users/{your username}/Library/Application Support/Timelapse) to store all your user settings and such.
 
 Photos and timelapse videos are stored in your local ~/Pictures directory inside a /Timelapse folder that's created when you launch the app.
+
+---
+
+#### Resources
+- [Github Repo](https://github.com/michaelwschultz/timelapse-app)
+- [Designs on Figma](https://www.figma.com/file/MgwL6S1vXKVcxgRORWZw7cWQ/timelapse-app)
+- [Prototype design with animations](https://www.figma.com/proto/MgwL6S1vXKVcxgRORWZw7cWQ/timelapse-app?node-id=3%3A2&scaling=min-zoom)
