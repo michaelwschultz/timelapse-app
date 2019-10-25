@@ -288,7 +288,7 @@ button:hover, #menu-button:hover {
   margin: 0;
   filter: blur(0px);
   will-change: transform;
-  r transform: scale(1);
+  transform: scale(1);
   transition: filter 0.2s ease-in, transform 0.2s ease-in;
   /* -webkit-transform: scaleX(-1); flips the video */
 }
@@ -427,7 +427,7 @@ button:hover, #menu-button:hover {
   transform: translateZ(0);
   animation-duration: 4s;
   animation-fill-mode: both;
-  animation-transition: ease-in;
+  transition: ease-in;
   animation-iteration-count: infinite;
   animation-name: fadeIn;
 }
@@ -445,7 +445,7 @@ button:hover, #menu-button:hover {
   transform: translateZ(0);
   animation-duration: 0.2s;
   animation-fill-mode: both;
-  animation-transition: ease-in;
+  transition: ease-in;
   animation-name: fadeOut;
 }
 

@@ -1,8 +1,12 @@
 const { app, BrowserWindow, autoUpdater, session } = require("electron");
 const appVersion = require("./package.json").version;
+const args = require('yargs').argv;
 
 const openAtLogin = false;
 let mainWindow;
+
+// Pass CLI args to app.js
+global.appArguments = {...args};
 
 // point to update server
 let updateFeed = "//localhost:3000/updates/latest";

@@ -1,6 +1,7 @@
 (function() {
   // requirements
   const { app } = require("electron").remote;
+  const args = require("electron").remote.getGlobal('appArguments');
   const fs = require("fs");
   const path = require("path");
   const shell = require("electron").shell;
@@ -11,7 +12,7 @@
   const videoshow = require("videoshow");
 
   // development
-  const testing = false;
+  const { nocam } = args;
 
   // constants
   const appName = app.getName();
@@ -576,7 +577,7 @@
   };
 
   const turnOnCamera = function() {
-    if (testing) {
+    if (nocam) {
       status.innerHTML = "camera on";
       cameraReady = true;
       return;
@@ -605,7 +606,7 @@
             status.innerHTML = "";
 
             localStream.getTracks()[0].onended = function(event) {
-              if (testing) {
+              if (nocamera) {
                 console.log("camera off");
               }
             };
@@ -622,7 +623,7 @@
   };
 
   const turnOffCamera = function() {
-    if (testing) {
+    if (nocamera) {
       status.innerHTML = "";
       return;
     }

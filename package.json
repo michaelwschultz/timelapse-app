@@ -1,13 +1,14 @@
 {
-  "name": "Timelapse",
+  "name": "timelapse",
   "version": "0.0.1",
   "description": "App for taking timelapse videos via your desktop camera.",
   "repository": "https://github.com/michaelwschultz/Timelapse-App",
   "license": "MIT",
   "main": "main.js",
   "scripts": {
-    "start": "electron .",
-    "build": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=assets/temp_icon.icns --prune=true --out=release_builds"
+    "dev": "electron .",
+    "build": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=assets/temp_icon.icns --prune=true --out=release_builds",
+    "nocam": "yarn dev --nocam"
   },
   "dependencies": {
     "@hapi/hoek": "^8.2.2",
@@ -18,6 +19,7 @@
   "devDependencies": {
     "electron": "^6.0.7",
     "electron-packager": "^14.0.5",
-    "lodash": "^4.17.15"
+    "lodash": "^4.17.15",
+    "yargs": "^14.2.0"
   }
 }

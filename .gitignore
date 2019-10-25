@@ -6,3 +6,4 @@
 /release_builds
 /updater/node_modules
 /updater/releases
+yarn-error.log
