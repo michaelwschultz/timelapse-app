@@ -14,8 +14,9 @@ This app requires Node https://nodejs.org. Download the latest version before ge
 This should install everything you need (including a local version of Electron) to get started with the project. Note that it's only been tested on OSX High Sierra 10.13.6.
 
 ```
-$ npm install
-$ npm start
+$ yarn install
+$ yarn dev
+$ yarn dev --nocamera (turns camera off for testing)
 ```
 
 ---

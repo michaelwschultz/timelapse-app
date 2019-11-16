@@ -42,8 +42,8 @@
 
   // timelapse settings
   let cameraTimeout = 4;
-  let secondsBetweenPhotos = 5;
-  let timelapseLength = 20;
+  let secondsBetweenPhotos = 2;
+  let timelapseLength = 10;
 
   // global
   // TODO figure out how to remove this need for assigning variables here
@@ -606,7 +606,7 @@
             status.innerHTML = "";
 
             localStream.getTracks()[0].onended = function(event) {
-              if (nocamera) {
+              if (nocam) {
                 console.log("camera off");
               }
             };
@@ -623,7 +623,7 @@
   };
 
   const turnOffCamera = function() {
-    if (nocamera) {
+    if (nocam) {
       status.innerHTML = "";
       return;
     }
