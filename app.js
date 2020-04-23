@@ -15,7 +15,7 @@
   const { nocam } = args;
 
   // constants
-  const appName = app.getName();
+  const appName = app.name;
   const appVersion = require("./package.json").version;
   const photosPath = path.join(app.getPath("pictures"), appName);
   const userDataPath = app.getPath("userData");

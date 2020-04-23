@@ -15,6 +15,10 @@ if (process.env.NODE_ENV !== "development") {
   updateFeed = "https://schultz.co/timelapse/updates/latest";
 }
 
+// removes deprecation warning
+// can remove after upgrading to Electron 9
+app.allowRendererProcessReuse = true;
+
 // TODO app requires a certificate to run the updater
 // autoUpdater.setFeedURL(updateFeed + '?v=' + appVersion)
 
