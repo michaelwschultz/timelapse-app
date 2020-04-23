@@ -2,7 +2,7 @@
   "name": "timelapse",
   "version": "0.0.1",
   "description": "App for taking timelapse videos via your desktop camera.",
-  "repository": "https://github.com/michaelwschultz/Timelapse-App",
+  "repository": "https://github.com/michaelwschultz/timelapse-app",
   "license": "MIT",
   "main": "main.js",
   "scripts": {
