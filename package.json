@@ -11,15 +11,14 @@
     "nocam": "yarn dev --nocam"
   },
   "dependencies": {
-    "@hapi/hoek": "^8.2.2",
     "ffbinaries": "^1.1.4",
     "fluent-ffmpeg": "^2.1.2",
     "videoshow": "github:michaelwschultz/videoshow"
   },
   "devDependencies": {
-    "electron": "^6.0.7",
-    "electron-packager": "^14.0.5",
+    "electron": "^8.2.3",
+    "electron-packager": "^14.2.1",
     "lodash": "^4.17.15",
-    "yargs": "^14.2.0"
+    "yargs": "^15.3.1"
   }
 }
