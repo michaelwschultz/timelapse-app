@@ -16,7 +16,7 @@
 
   // constants
   const appName = app.name;
-  const appVersion = require("./package.json").version;
+  const appVersion = require("../package.json").version;
   const photosPath = path.join(app.getPath("pictures"), appName);
   const userDataPath = app.getPath("userData");
   const binaryDest = userDataPath + "/Binaries";

@@ -1,6 +1,8 @@
+*.cache
 *.DS_Store
 *.sketch
 /dev-app-update.yml
+/dist
 /electron-builder.yml
 /node_modules
 /release_builds

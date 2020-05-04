@@ -1,18 +1,26 @@
-const { app, BrowserWindow, autoUpdater, session } = require("electron");
-const appVersion = require("./package.json").version;
-const args = require('yargs').argv;
+const electron = require("electron");
+const app = electron.app;
 
-const openAtLogin = false;
+const BrowserWindow = electron.BrowserWindow;
+const session = electron.session;
+
+
+// const appVersion = require("../package.json").version;
+const args = require('yargs').argv;
+const path = require("path");
+const isDev = require("electron-is-dev");
+
+// const openAtLogin = false;
 let mainWindow;
 
 // Pass CLI args to app.js
 global.appArguments = {...args};
 
 // point to update server
-let updateFeed = "//localhost:3000/updates/latest";
-if (process.env.NODE_ENV !== "development") {
+// let updateFeed = "//localhost:3000/updates/latest";
+if (isDev) {
   process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
-  updateFeed = "https://schultz.co/timelapse/updates/latest";
+  // updateFeed = "https://schultz.co/timelapse/updates/latest";
 }
 
 // removes deprecation warning
@@ -22,13 +30,6 @@ app.allowRendererProcessReuse = true;
 // TODO app requires a certificate to run the updater
 // autoUpdater.setFeedURL(updateFeed + '?v=' + appVersion)
 
-// Quit when all windows are closed.
-app.on("window-all-closed", function() {
-  if (process.platform != "darwin") {
-    app.quit();
-  }
-});
-
 // TODO figure out how this can be updated from the app side
 app.setLoginItemSettings({
   openAtLogin: false,
@@ -36,8 +37,8 @@ app.setLoginItemSettings({
 
 // Improves security
 // https://github.com/electron/electron/blob/master/docs/tutorial/security.md
-app.on("web-contents-created", (event, contents) => {
-  contents.on("will-attach-webview", (event, webPreferences, params) => {
+app.on("web-contents-created", (_event, contents) => {
+  contents.on("will-attach-webview", (_event, webPreferences) => {
     // Strip away preload scripts if unused or verify their location is legitimate
     delete webPreferences.preload;
     delete webPreferences.preloadURL;
@@ -52,9 +53,7 @@ app.on("web-contents-created", (event, contents) => {
   });
 });
 
-// This method will be called when Electron has done everything
-// initialization and ready for creating browser windows.
-app.on("ready", function() {
+function createWindow() {
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
     callback({ responseHeaders: `default-src 'none'` });
   });
@@ -74,14 +73,28 @@ app.on("ready", function() {
     },
   });
 
-  // and load the index.html of the app.
-  mainWindow.loadURL("file://" + __dirname + "/index.html");
+  mainWindow.loadURL(
+    isDev
+      ? "http://localhost:3000"
+      : `file://${path.join(__dirname, "../build/index.html")}`
+  );
 
-  // Emitted when the window is closed.
-  mainWindow.on("closed", function() {
-    // Dereference the window object, usually you would store windows
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
-    mainWindow = null;
-  });
+  mainWindow.on("closed", () => (mainWindow = null));
+}
+
+// This method will be called when Electron has done everything
+// initialization and ready for creating browser windows.
+app.on("ready", createWindow);
+
+// Quit when all windows are closed.
+app.on("window-all-closed", () => {
+  if (process.platform != "darwin") {
+    app.quit();
+  }
+});
+
+app.on("activate", () => {
+  if (mainWindow === null) {
+    createWindow();
+  }
 });
