@@ -15,6 +15,7 @@
     "react-start": "parcel -p 3000 index.html"
   },
   "dependencies": {
+    "classnames": "^2.2.6",
     "electron-is-dev": "^1.2.0",
     "ffbinaries": "^1.1.4",
     "fluent-ffmpeg": "^2.1.2",
