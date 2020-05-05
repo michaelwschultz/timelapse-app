@@ -96,7 +96,7 @@ const Settings = () => {
       {/* Move styles from app.css */}
       <style jsx>{`
         .test {
-          color: "white";
+          color: white;
         }
       `}</style>
     </>

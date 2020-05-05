@@ -81,11 +81,6 @@ ul, li {
   transition: transform 0.3s ease-in-out;
 }
 
-#timelapse-options {
-  margin: 32px auto;
-  width: 408px;
-}
-
 #timelapse-options .timing button {
   width: 100%;
 }
@@ -201,13 +196,6 @@ input[type="checkbox"]:checked+label:after {
   opacity: 0.95;
   will-change: transform;
   transition: transform 0.2s ease-in-out;
-}
-
-/* animates the controls panel up and down */
-
-.animate-controls {
-  will-change: transform;
-  transform: translateY(-296px);
 }
 
 button {
