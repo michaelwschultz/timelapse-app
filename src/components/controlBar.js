@@ -70,7 +70,6 @@ const ControlBar = (props) => {
       <style jsx>{`
         #controls {
           background: #131D2A;
-          opacity: 0.95;
           padding: 8px 0;
           width: 100%;
           z-index: 12;

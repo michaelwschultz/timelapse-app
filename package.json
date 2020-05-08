@@ -34,5 +34,8 @@
     "eslint-plugin-react": "^7.19.0",
     "parcel-bundler": "^1.12.4",
     "wait-on": "^4.0.2"
-  }
+  },
+  "browserslist": [
+    "last 1 Chrome versions"
+  ]
 }

@@ -27,11 +27,14 @@ const ControlPanel = (props) => {
 
       <style jsx>{`
         .control-panel {
+          background: #131D2A;
           height: 100vh;
-          position: absolute;
           margin-top: 320px;
+          opacity: 0.95;
+          position: absolute;
           width: 100%;
           will-change: top;
+          z-index: 10;
         }
         .animate-controls-up {
           margin-top: 24px;
