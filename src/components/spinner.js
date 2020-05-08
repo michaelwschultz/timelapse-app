@@ -15,17 +15,15 @@ const Spinner = (props) => {
       <style jsx>{`
         #spinner, #spinner, :after {
           border-radius: 50%;
-          width: 24px;
-          height: 24px;
+          width: 20px;
+          height: 20px;
         }
         #spinner {
-          position: absolute;
-          font-size: 2px;
           text-indent: -9999em;
-          border-top: 1.1em solid rgba(255, 255, 255, 0.2);
-          border-right: 1.1em solid rgba(255, 255, 255, 0.2);
-          border-bottom: 1.1em solid rgba(255, 255, 255, 0.2);
-          border-left: 1.1em solid var(--primary);
+          border-top: 2px solid rgba(255, 255, 255, 0.2);
+          border-right: 2px solid rgba(255, 255, 255, 0.2);
+          border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+          border-left: 2px solid var(--primary);
           transform: translateZ(0);
         }
         .spin {

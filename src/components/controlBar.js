@@ -1,59 +1,92 @@
 import React from "react";
 import Spinner from "./spinner";
 
-const ControlBar = () => {
-  const showSpinner = false;
-  const spinSpinner = false;
+const ControlBar = (props) => {
+  const {
+    isPanelOpen,
+    setIsPanelOpen,
+    showSpinner = false,
+    spinSpinner = false,
+  } = props;
 
   return (
-    <div>
-      <div id="playback-controls" className="hide">
-        <div className="flex justify-between px2 mb1">
-          <button id="btn-play-pause" title="Play">
-            Play
-          </button>
-          <div>
-            <button id="btn-open-file" title="View in Quicktime">
-              View in Quicktime
-            </button>
-            <button id="btn-show-file" title="Go to video">
-              Go to video
-            </button>
-          </div>
-          <button id="btn-close-playback" title="Back">
-            Back
-          </button>
-        </div>
-      </div>
+    <>
+      <div id="controls">
+        <div className="flex justify-between items-center px2">
 
-      <div id="controls" className="fadeInUp">
-        <div className="flex justify-between px2 mb1">
-          <div
-            className="absolute"
-            style={{width: "28px", height: "28px", left: "50%", marginLeft: "-14px"}}
-          >
+          {/* left affordance */}
+          <div className="flex items-center">
+            <button id="menu-button" onClick={() => setIsPanelOpen(!isPanelOpen)}>
+              <div className="bar"></div>
+              <div className="bar"></div>
+              <div className="bar"></div>
+            </button>
+            {/* <button id="clear-all" disabled>
+              Clear All
+            </button> */}
+          </div>
+
+          {/* center affordance */}
+          <div className="flex items-center">
             <Spinner showing={showSpinner} spinning={spinSpinner} />
             <div id="photo-count"></div>
           </div>
-          <div className="flex">
-            <button id="menu-button">
-              <div className="bar"></div>
-              <div className="bar"></div>
-              <div className="bar"></div>
-            </button>
-            <button id="clear-all" disabled>
-              Clear All
-            </button>
-          </div>
-          <>
-            <button id="create-video-button" disabled>
+
+          {/* right affordance */}
+          <div className="flex items-center">
+            {/* <button id="create-video-button" disabled>
               Export Timelapse Video
-            </button>
+            </button> */}
             <button id="start-button" title="Start">Start</button>
-          </>
+          </div>
         </div>
       </div>
-    </div>
+      {/*
+        TODO
+        Rename this file to controlBar(s) and export
+        several control bars: default, playBar, editBar, etc...
+
+        <div id="playback-controls" className="hide">
+          <div className="flex justify-between px2 mb1">
+            <button id="btn-play-pause" title="Play">
+              Play
+            </button>
+            <div>
+              <button id="btn-open-file" title="View in Quicktime">
+                View in Quicktime
+              </button>
+              <button id="btn-show-file" title="Go to video">
+                Go to video
+              </button>
+            </div>
+            <button id="btn-close-playback" title="Back">
+              Back
+            </button>
+          </div>
+          background: #131D2A;
+        </div>
+      */}
+
+      <style jsx>{`
+        #controls {
+          background: #131D2A;
+          opacity: 0.95;
+          padding: 8px 0;
+          width: 100%;
+          z-index: 12;
+        }
+        #photo-count {
+          color: white;
+          font-size: 12px;
+          line-height: 24px;
+          opacity: 0.5;
+          padding-left: 8px;
+          pointer-events: none;
+          text-align: center;
+          z-index: 9;
+        }
+      `}</style>
+    </>
   );
 };
 
