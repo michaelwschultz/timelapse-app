@@ -2,40 +2,58 @@
   "name": "timelapse",
   "version": "0.0.1",
   "description": "App for taking timelapse videos via your desktop camera.",
-  "repository": "https://github.com/michaelwschultz/timelapse-app",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/michaelwschultz/timelapse-app.git"
+  },
   "license": "MIT",
+  "author": {
+    "name": "Michael Schultz",
+    "email": "michaelwschultz@gmail.com",
+    "url": "https://github.com/michaelwschultz"
+  },
   "main": "src/electron.js",
   "scripts": {
-    "build": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=assets/temp_icon.icns --prune=true --out=release_builds",
-    "dev": "concurrently 'cross-env BROWSER=none yarn react-start' 'wait-on http://localhost:3000 && electron .'",
-    "electron-start": "electron .",
-    "lint": "eslint",
-    "nocam": "yarn dev --nocam",
-    "react-build": "parcel build index.html",
-    "react-start": "parcel -p 3000 index.html"
+    "prod": "cross-env NODE_ENV=production webpack --mode production --config webpack.build.config.js && electron --noDevServer .",
+    "start": "cross-env NODE_ENV=development webpack-dev-server --hot --host 0.0.0.0 --config=./webpack.dev.config.js --mode development",
+    "build": "cross-env NODE_ENV=production webpack --config webpack.build.config.js --mode production",
+    "package": "yarn run build",
+    "postpackage": "electron-packager ./ --out=./builds"
   },
+  "engines": {
+    "node": ">=9.0.0",
+    "yarn": ">=1.0.0"
+  },
+  "browserslist": [
+    "last 4 versions"
+  ],
   "dependencies": {
     "classnames": "^2.2.6",
     "electron-is-dev": "^1.2.0",
     "ffbinaries": "^1.1.4",
     "fluent-ffmpeg": "^2.1.2",
-    "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react": "^16.13.1",
     "videoshow": "github:michaelwschultz/videoshow",
     "yargs": "^15.3.1"
   },
   "devDependencies": {
-    "concurrently": "^5.2.0",
+    "@babel/core": "^7.9.0",
+    "@babel/preset-react": "^7.9.4",
+    "babel-loader": "^8.1.0",
+    "babili-webpack-plugin": "^0.1.2",
     "cross-env": "^7.0.2",
+    "css-loader": "^3.5.3",
     "electron": "^8.2.5",
     "electron-builder": "^22.6.0",
+    "electron-devtools-installer": "^3.0.0",
     "electron-packager": "^14.2.1",
-    "eslint": "^6.8.0",
-    "eslint-plugin-react": "^7.19.0",
-    "parcel-bundler": "^1.12.4",
-    "wait-on": "^4.0.2"
-  },
-  "browserslist": [
-    "last 1 Chrome versions"
-  ]
+    "file-loader": "^6.0.0",
+    "html-webpack-plugin": "^4.2.0",
+    "mini-css-extract-plugin": "^0.9.0",
+    "style-loader": "^1.2.0",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.10.3"
+  }
 }

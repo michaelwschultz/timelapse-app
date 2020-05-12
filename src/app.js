@@ -1,3 +1,5 @@
+import "./app.css";
+import "./basscss.css";
 import React from "react";
 import Settings from "./components/settings";
 import ControlPanel from "./components/controlPanel";

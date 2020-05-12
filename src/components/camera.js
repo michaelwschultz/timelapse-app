@@ -9,7 +9,20 @@ const CAPTURE_OPTIONS = {
   }
 };
 
+// Poor mans CLI arguments
+// These are currently being passed through webpack manualy
+// Have I mentioned how much I hate webpack?
+const CAMERA_HIDDEN = ARGUMENTS.includes("--nocam");
+
 const Camera = () => {
+  if (CAMERA_HIDDEN) {
+    return (
+      <div id="status">
+        Camera hidden
+      </div>
+    );
+  }
+
   const videoRef = useRef();
   const mediaStream = useDeviceCamera(CAPTURE_OPTIONS);
 

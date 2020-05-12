@@ -10,7 +10,7 @@ const Settings = () => {
             className="h4"
             style={{color: "white", pointerEvents: "none"}}
           >
-            Timelapse
+            MIchael
           </span>
           <span
             id="app-version"
