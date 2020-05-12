@@ -1,5 +1,5 @@
 import React from "react";
-import Spinner from "./spinner";
+import Spinner from "../spinner";
 
 const ControlBar = (props) => {
   const {
@@ -41,31 +41,25 @@ const ControlBar = (props) => {
           </div>
         </div>
       </div>
-      {/*
-        TODO
-        Rename this file to controlBar(s) and export
-        several control bars: default, playBar, editBar, etc...
 
-        <div id="playback-controls" className="hide">
-          <div className="flex justify-between px2 mb1">
-            <button id="btn-play-pause" title="Play">
-              Play
+      <div id="playback-controls" className="hide">
+        <div className="flex justify-between px2 mb1">
+          <button id="btn-play-pause" title="Play">
+            Play
+          </button>
+          <div>
+            <button id="btn-open-file" title="View in Quicktime">
+              View in Quicktime
             </button>
-            <div>
-              <button id="btn-open-file" title="View in Quicktime">
-                View in Quicktime
-              </button>
-              <button id="btn-show-file" title="Go to video">
-                Go to video
-              </button>
-            </div>
-            <button id="btn-close-playback" title="Back">
-              Back
+            <button id="btn-show-file" title="Go to video">
+              Go to video
             </button>
           </div>
-          background: #131D2A;
+          <button id="btn-close-playback" title="Back">
+            Back
+          </button>
         </div>
-      */}
+      </div>
 
       <style jsx>{`
         #controls {
