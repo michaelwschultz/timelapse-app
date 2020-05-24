@@ -11,26 +11,25 @@ Timelapse is built on top of Electron https://github.com/electron/electron to ma
 #### Running the app locally
 This app requires Node https://nodejs.org. Download the latest version before getting started.
 
-This should install everything you need (including a local version of Electron) to get started with the project. Note that it's only been tested on OSX High Sierra 10.13.6.
+This should install everything you need (including a local version of Electron) to get started with the project. Note that it's only been tested on recent versions of OSX starting with High Sierra 10.13.6 up to Catalina 10.15.4.
 
 ```
-$ yarn install
+$ yarn
 $ yarn dev
-$ yarn dev --nocamera (turns camera off for testing)
+$ yarn dev --nocam (turns camera off for testing)
 ```
 
 ---
 
 #### Building for OSX
-$ npm run build
-compress folder and place inside /updater/releases/
+$ yarn build
 
 ---
 
 #### Good things to know
 The app creates an application folder located at (/Users/{your username}/Library/Application Support/Timelapse) to store all your user settings and such.
 
-Photos and timelapse videos are stored in your local ~/Pictures directory inside a /Timelapse folder that's created when you launch the app.
+Photos and timelapse videos are stored in your local ~/Pictures directory inside a /Timelapse folder that's created when you launch the app. Maybe I'll allow you to customize this directory at some point.
 
 ---
 
