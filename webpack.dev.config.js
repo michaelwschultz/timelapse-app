@@ -12,25 +12,25 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.css$/,
+        test: /\.css$/i,
         use: [{ loader: 'style-loader' }, { loader: 'css-loader' }],
         include: defaultInclude
       },
       {
-        test: /\.jsx?$/,
+        test: /\.jsx?$/i,
         use: [{ loader: 'babel-loader' }],
         include: defaultInclude
       },
       {
-        test: /\.(jpe?g|png|gif)$/,
+        test: /\.(jpe?g|png|gif)$/i,
         use: [{ loader: 'file-loader?name=img/[name]__[hash:base64:5].[ext]' }],
         include: defaultInclude
       },
       {
-        test: /\.(eot|svg|ttf|woff|woff2)$/,
+        test: /\.(eot|svg|ttf|woff|woff2)$/i,
         use: [{ loader: 'file-loader?name=font/[name]__[hash:base64:5].[ext]' }],
         include: defaultInclude
-      }
+      },
     ]
   },
   target: 'electron-renderer',

@@ -1,6 +1,12 @@
 import React from "react";
+import chevronIcon from '../assets/chevron.png';
 
 const Settings = () => {
+  // TODO: find a better way to import images so this doesn't need to be done.
+  // PS: I hate Webpack.
+  const chevron = new Image();
+  chevron.src = chevronIcon;
+
   return (
     <>
       <div id="settings" className="mt2 px2">
@@ -24,11 +30,11 @@ const Settings = () => {
             <h4>Photo Frequency</h4>
             <div className="input-options flex items-center justify-between">
               <button id="frequency-down" className="option-button">
-                <img src="assets/chevron.png" />
+                <img src={chevron.src} />
               </button>
               <input id="photo-frequency" value="15" type="number" />
               <button id="frequency-up" className="option-button right">
-                <img src="assets/chevron.png" />
+                <img src={chevron.src} />
               </button>
             </div>
             <div className="timing flex items-center justify-between">
@@ -48,11 +54,11 @@ const Settings = () => {
             <h4>Timelapse Duration</h4>
             <div className="input-options flex items-center justify-between">
               <button id="duration-down" className="option-button">
-                <img src="assets/chevron.png" />
+                <img src={chevron.src} />
               </button>
               <input id="timelapse-duration" value="15" type="number" />
               <button id="duration-up" className="option-button right">
-                <img src="assets/chevron.png" />
+                <img src={chevron.src} />
               </button>
             </div>
             <div className="timing flex items-center justify-between">
