@@ -6,8 +6,6 @@ const { spawn } = require('child_process');
 // Any directories you will be adding code/files into, need to be added to this array so webpack will pick them up
 const defaultInclude = path.resolve(__dirname, 'src');
 
-console.log('🔴', process.argv);
-
 module.exports = {
   module: {
     rules: [
