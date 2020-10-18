@@ -9,6 +9,10 @@ const ControlBar = (props) => {
     spinSpinner = false,
   } = props;
 
+  function onStartClick() {
+    console.log('start clicked')
+  }
+
   return (
     <>
       <div id="controls">
@@ -37,7 +41,7 @@ const ControlBar = (props) => {
             {/* <button id="create-video-button" disabled>
               Export Timelapse Video
             </button> */}
-            <button id="start-button" title="Start">Start</button>
+            <button id="start-button" title="Start" onClick={onStartClick}>Start</button>
           </div>
         </div>
       </div>

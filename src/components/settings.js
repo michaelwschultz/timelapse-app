@@ -1,6 +1,8 @@
 import React from "react";
 import chevronIcon from '../assets/chevron.png';
 
+const APP_NAME = 'Lapsey';
+
 const Settings = () => {
   // TODO: find a better way to import images so this doesn't need to be done.
   // PS: I hate Webpack.
@@ -16,7 +18,7 @@ const Settings = () => {
             className="h4"
             style={{color: "white", pointerEvents: "none"}}
           >
-            MIchael
+            {APP_NAME}
           </span>
           <span
             id="app-version"
@@ -85,7 +87,7 @@ const Settings = () => {
               name="startAppOnLaunch"
             />
             <label htmlFor="start-app-on-launch"></label>
-            <span>Launch Lapsey on system startup</span>
+            <span>Launch {APP_NAME} on system startup</span>
           </li>
           <li className="checkbox">
             <input
