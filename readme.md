@@ -16,7 +16,7 @@ This should install everything you need (including a local version of Electron) 
 ```
 $ yarn
 $ yarn dev
-$ yarn dev --nocam (turns camera off for testing)
+$ yarn dev:nocam (turns camera off for testing)
 ```
 
 ---
