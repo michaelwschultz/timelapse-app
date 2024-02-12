@@ -1,3 +1,8 @@
+⚠️ Not currently being worked on.
+
+---
+
+
 # Timelapse app
 #### Designed & built by Michael Schultz https://michaelschultz.com
 Tiny desktop app that creates timelapse videos using your built in desktop/laptop camera.
